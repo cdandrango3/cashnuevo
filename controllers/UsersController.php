@@ -93,7 +93,7 @@ class UsersController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             if($request->isGet){
                 return [
-                    'title'=> "Create nuevo Usuario",
+                    'title'=> "Crear nuevo Usuario",
                     'content'=>$this->renderAjax('create', [
                         'model' => $model,
                     ]),
@@ -112,7 +112,7 @@ class UsersController extends Controller
                 ];         
             }else{           
                 return [
-                    'title'=> "Create nuevo Usuario",
+                    'title'=> "Crear nuevo Usuario",
                     'content'=>$this->renderAjax('create', [
                         'model' => $model,
                     ]),

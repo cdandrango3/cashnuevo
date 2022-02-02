@@ -91,7 +91,7 @@ class InstitutionController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             if($request->isGet){
                 return [
-                    'title'=> "Create nueva Empresa",
+                    'title'=> "Crear nueva Empresa",
                     'content'=>$this->renderAjax('create', [
                         'model' => $model,
                     ]),
@@ -102,7 +102,7 @@ class InstitutionController extends Controller
             }else if($model->load($request->post()) && $model->save()){
                 return [
                     'forceReload'=>'#crud-datatable-pjax',
-                    'title'=> "Create new Institution",
+                    'title'=> "Crear nueva Empresa",
                     'content'=>'<span class="text-success">Create Institution success</span>',
                     'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
                             Html::a('Crear Otra',['create'],['class'=>'btn btn-primary','role'=>'modal-remote'])
@@ -110,7 +110,7 @@ class InstitutionController extends Controller
                 ];         
             }else{           
                 return [
-                    'title'=> "Create nueva Empresa",
+                    'title'=> "Crear nueva Empresa",
                     'content'=>$this->renderAjax('create', [
                         'model' => $model,
                     ]),
