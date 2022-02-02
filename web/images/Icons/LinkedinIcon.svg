@@ -1,0 +1,27 @@
+<svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>.cls-1 {
+      fill: #fff;
+    }
+
+    .cls-2 {
+      fill: #312c30;
+    }</style>
+  </defs>
+  <title>LinkedinIcon</title>
+  <g data-name="Layer 2" id="Layer_2">
+    <g data-name="Group 61" id="Group_61">
+      <path class="cls-1" d="M28,55.25A27.25,27.25,0,1,1,55.25,28,27.25,27.25,0,0,1,28,55.25Z" data-name="Path 51"
+            id="Path_51"/>
+    </g>
+    <g data-name="Group 63" id="Group_63">
+      <g data-name="Group 62" id="Group_62">
+        <path class="cls-2" d="M43.4,30.07V40.25a.45.45,0,0,1-.45.45H37.7a.45.45,0,0,1-.46-.45h0V30.79c0-2.49-.89-4.19-3.12-4.19A3.36,3.36,0,0,0,31,28.85a4.22,4.22,0,0,0-.2,1.5v9.9a.45.45,0,0,1-.45.45H25.06a.44.44,0,0,1-.46-.45h0c0-2.52.07-14.75,0-17.62a.46.46,0,0,1,.45-.46h5.25a.45.45,0,0,1,.45.46V24.8l0,.06h0V24.8a6.11,6.11,0,0,1,5.56-3.06c4,0,7.09,2.64,7.09,8.34ZM15.48,40.7h5.25a.46.46,0,0,0,.46-.45h0V22.62a.46.46,0,0,0-.46-.45H15.48a.45.45,0,0,0-.45.45V40.25a.45.45,0,0,0,.45.45Z" data-name="Path 52"
+              id="Path_52"/>
+      </g>
+    </g>
+    <g data-name="Group 64" id="Group_64">
+      <circle class="cls-2" cx="17.92" cy="16.51" data-name="Ellipse 5" id="Ellipse_5" r="3.3"/>
+    </g>
+  </g>
+</svg>
