@@ -10,7 +10,14 @@
     $f=New Facturafin;
     $this->title = 'Consultar Documento Físico';
     $this->params['breadcrumbs'][] = $this->title;
-    $c=$_GET['tipos']
+    $c=$_GET['tipos'];
+if(Yii::$app->session->hasFlash("error")) {
+    $ca = Yii::$app->session->getFlash('error');
+    foreach ($ca as $casif) {
+
+        echo '<div class="alert alert-danger">' . $casif . '</div>';
+    }
+}
 ?>
     <a href='<?=Url::to(['cliente/factura'])?>' class="btn btn-success float-right" title="Crear Factura" data-toggle="tooltip"> <i class="fas fa-plus"></i></a>
     <br>
@@ -103,14 +110,11 @@
               method: "POST",             
                url: '/web/cliente/buscarf?fil='+c+'&&per='+p+'&&tipo='+t,
                data: { tipo:$('#nfac').val() },
-       
             success: function(data) {
                 $("#ver").html(data)        
             }
         })
-    
         }
- 
         JS;
         $this->registerJs($js)
     ?>

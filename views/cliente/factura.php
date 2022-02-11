@@ -35,7 +35,6 @@ $model->f_timestamp=date("Y-m-d")
 
 <div class="cliente-factura">
     <?php
-    yii::debug(Yii::$app->session->getFlash('error'));
     if(Yii::$app->session->hasFlash("error")){
         $c=Yii::$app->session->getFlash('error');
         foreach ($c as  $message) {

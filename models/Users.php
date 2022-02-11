@@ -22,7 +22,7 @@ use Yii;
  * @property string $updated_at
  * @property string|null $deleted_at
  * @property int $person_id
- *
+ * @property bool $active
  * @property Institution[] $institutions
  * @property UserInstitution[] $userInstitutions
  * @property Person $person
@@ -30,6 +30,8 @@ use Yii;
  */
 class Users extends \yii\db\ActiveRecord
 {
+    public $passrea;
+    public $passanterior;
     /**
      * {@inheritdoc}
      */
@@ -44,10 +46,12 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+
+            [['passrea','passanterior'],'safe'],
             [['username', 'email', 'password', 'role_id', 'person_id'], 'required'],
             [['remember_token', 'forgotpassword_guid', 'email', 'password'], 'string'],
             [['email_verified_at'], 'safe'],
-            [['status', 'consumer'], 'boolean'],
+            [['status', 'consumer','active'], 'boolean'],
             [['role_id', 'person_id'], 'default', 'value' => null],
             [['role_id', 'person_id'], 'integer'],
             [['username'], 'string', 'max' => 255],
@@ -65,6 +69,7 @@ class Users extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'passrea'=>'repeat password',
             'id' => 'ID',
             'username' => 'Usuario',
             'remember_token' => 'Remember Token',
@@ -76,8 +81,9 @@ class Users extends \yii\db\ActiveRecord
             'status' => 'Estado',
             'consumer' => 'Consumer',
             'role_id' => 'Role a Asignar',
-            
+            'active' => 'Active',
             'person_id' => 'Persona',
+            'passanterior'=>'Contraseña anterior'
         ];
     }
 
@@ -86,10 +92,34 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
+    public function setPassword($password)
+    {
+        $this->password = Yii::$app->getSecurity()->generatePasswordHash($password);
+  }
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->getSecurity()->generateRandomString();
+     }
     public function getInstitutions()
     {
         return $this->hasMany(Institution::className(), ['id_users' => 'id']);
     }
+    public function generatePasswordResetToken()
+    {
+        return Yii::$app->getSecurity()->generateRandomString() . '_' . time();
+  }
+    public static function findByPasswordResetToken($token)
+    {
+      $parts = explode('_', $token);
+      $timestamp = (int) end($parts);
+      if ($timestamp + 3000 < time()) {
+          return null;
+      }
+      return static::findOne([
+          'remember_token' => $token
+      ]);
+  }
+
 
     /**
      * Gets query for [[UserInstitutions]].

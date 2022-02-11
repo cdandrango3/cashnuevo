@@ -2,14 +2,19 @@
 
 namespace app\controllers;
 
+use app\models\forgotpass;
+use app\models\Users;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\ChartAccounts;
+use yii\web\User;
 
 class SiteController extends Controller
 {
@@ -100,7 +105,17 @@ class SiteController extends Controller
         $this->layout = 'blank';
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            $user=Users::findOne(["username"=>$model->username]);
+            yii::debug($user->active);
+            if($user->active==True){
+
+                return $this->goBack();
+            }
+            else{
+                yii::debug($user->active);
+                return $this->redirect("site/validate?users=".$model->username."&&pass=".$model->password);
+            }
+
         }
         $model->password = '';
         return $this->render('login', [
@@ -114,6 +129,58 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
+    public function actionFormchange($token){
+        $model=New Users();
+        $validate=Users::findByPasswordResetToken($token);
+        if (is_null($validate)){
+            throw new NotFoundHttpException('El token ha expirado');
+        }
+        if($model->load(Yii::$app->request->post())){
+            if($model->password != $model->passrea){
+                Yii::debug("aqui estoy");
+                Yii::$app->session->addFlash("error", "Las contraseñas no coinciden");
+                $url = $_SERVER['HTTP_REFERER'];
+                return $this->redirect($url);
+            }
+            $validate=$model::findByPasswordResetToken($token);
+            $validate->updateAttributes(['password' => Yii::$app->getSecurity()->generatePasswordHash($model->password)]);
+            $validate->updateAttributes(['active' => True]);
+            Yii::$app->session->setFlash("complete", "Su contraseña ha sido cambiada satisfactoriamente");
+            $this->redirect("/");
+        }
+        return $this->render('formchange',["user"=>$model]);
+
+     }
+    public function actionChangepassword(){
+        $model=new Forgotpass();
+        if($model->load(Yii::$app->request->post()) && $model->validate()){
+            $c=Users::find()->where(["username"=>$model->user])->exists();
+            if ($c){
+                $em=Users::findOne(["username"=>$model->user]);
+                $em->updateAttributes(['remember_token'=>Users::generatePasswordResetToken()]);
+                Yii::$app->mailer->compose()
+                    ->setFrom('cdandrango@gmail.com')
+                    ->setTo($em->email)
+                    ->setSubject('Recuperar contraseña')
+                    ->setHtmlBody('
+                      <p>Estimado usuario En la parte de abajo va a tener el link para resetear su contraseña</p>
+                      <p>Link</p> <a href="http://localhost:8080/site/formchange?token='.$em->remember_token.'">http://localhost:8080/site/changepassword</a>
+                      
+                      <h1>Gracias por utilizar tg cashbook</h1>
+                   ')
+                    ->send();
+
+                Yii::$app->session->setFlash("success", "Se ha enviado un correo electronico con sus credenciales");
+            }
+
+
+            else{
+                Yii::$app->session->setFlash("error", "No se encuentra el usuario registrado");
+
+            }
+        }
+        return $this->render('changepassword', ['model' => $model]);
+    }
     public function actionLogin()
     {
 
@@ -137,6 +204,22 @@ class SiteController extends Controller
      *
      * @return Response
      */
+    public function actionValidate($users,$pass){
+        $user=New Users();
+        if ($user->load(Yii::$app->request->post())) {
+            if($user->password != $user->passrea){
+                Yii::debug("aqui estoy");
+                Yii::$app->session->addFlash("error", "Las contraseñas no coinciden");
+                $url = $_SERVER['HTTP_REFERER'];
+                return $this->redirect($url);
+            }
+            $us=Users::findOne(["username"=>$users]);
+            $us->updateAttributes(['password' => Yii::$app->getSecurity()->generatePasswordHash($user->password)]);
+            $us->updateAttributes(['active' => True]);
+            $this->redirect("/");
+        }
+        return $this->render("validate",["user"=>$user]);
+    }
     public function actionLogout()
     {
         Yii::$app->user->logout();

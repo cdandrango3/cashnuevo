@@ -1,11 +1,12 @@
 <?php
 /**/
 return [
-    'class' => 'yii\db\Connection',
+  'class' => 'yii\db\Connection',
     'dsn' => 'pgsql:host=ec2-3-225-41-234.compute-1.amazonaws.com;dbname=dc0vok92tb7gfr',
     'username' => 'buqgklffygwnks',
     'password' => 'beb10a5f981495b08fc99ec2ae09fc037cae9e7ed6a65f56872e8ffc9941687b',
     'charset' => 'utf8',
+
 
     // Schema cache options (for production environment)
     //'enableSchemaCache' => true,

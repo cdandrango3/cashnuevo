@@ -61,12 +61,12 @@ class UsersController extends Controller
         if($request->isAjax){
             Yii::$app->response->format = Response::FORMAT_JSON;
             return [
-                    'title'=> "Usuario: ".$id,
+                    'title'=> "Users #".$id,
                     'content'=>$this->renderAjax('view', [
                         'model' => $this->findModel($id),
                     ]),
-                    'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                            Html::a('Editar',['update','id'=>$id],['class'=>'btn btn-primary','role'=>'modal-remote'])
+                    'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                            Html::a('Edit',['update','id'=>$id],['class'=>'btn btn-primary','role'=>'modal-remote'])
                 ];    
         }else{
             return $this->render('view', [
@@ -93,31 +93,50 @@ class UsersController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             if($request->isGet){
                 return [
-                    'title'=> "Crear nuevo Usuario",
+                    'title'=> "Create new Users",
                     'content'=>$this->renderAjax('create', [
                         'model' => $model,
                     ]),
-                    'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                                Html::button('Guardar',['class'=>'btn btn-primary','type'=>"submit"])
+                    'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                                Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
         
                 ];         
-            }else if($model->load($request->post()) && $model->save()){
+            }else if($model->load($request->post())){
+                $password=$model->password;
+                $model->setPassword($model->password);
+                if($model->save()) {
+                    Yii::$app->mailer->compose()
+                        ->setFrom('cdandrango@gmail.com')
+                        ->setTo($model->email)
+                        ->setSubject('Tgcashbook Bienvenido')
+                        ->setHtmlBody('
+                      <p>En la parte de abajo va a tener su usuario y contraseña para el ingreso del sistema </p>
+                      <p>User</p>' . $model->username . '<br>
+                      <p>Contraseña</p>' . $password . '<br>
+                      <p>Link de usuario</p> <a href=""></a>
+                      
+                      <h1>Gracias por utilizar tg cashbook</h1>
+                   ')
+                        ->send();
+                    yii::debug("here");
+                }
                 return [
                     'forceReload'=>'#crud-datatable-pjax',
-                    'title'=> "Crear nuevo Usuario",
+                    'title'=> "Create new Users",
                     'content'=>'<span class="text-success">Create Users success</span>',
-                    'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                            Html::a('Crear Otro',['create'],['class'=>'btn btn-primary','role'=>'modal-remote'])
-        
+                    'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                            Html::a('Create More',['create'],['class'=>'btn btn-primary','role'=>'modal-remote'])
+
                 ];         
-            }else{           
+            } else{
+               yii::debug($model->errors);
                 return [
-                    'title'=> "Crear nuevo Usuario",
+                    'title'=> "Create new Users",
                     'content'=>$this->renderAjax('create', [
                         'model' => $model,
                     ]),
-                    'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                                Html::button('Guardar',['class'=>'btn btn-primary','type'=>"submit"])
+                    'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                                Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
         
                 ];         
             }
@@ -155,12 +174,12 @@ class UsersController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             if($request->isGet){
                 return [
-                    'title'=> "Actualizar Usuario #".$id,
+                    'title'=> "Update Users #".$id,
                     'content'=>$this->renderAjax('update', [
                         'model' => $model,
                     ]),
-                    'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                                Html::button('Guardar',['class'=>'btn btn-primary','type'=>"submit"])
+                    'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                                Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
                 ];         
             }else if($model->load($request->post()) && $model->save()){
                 return [
@@ -169,17 +188,17 @@ class UsersController extends Controller
                     'content'=>$this->renderAjax('view', [
                         'model' => $model,
                     ]),
-                    'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                            Html::a('Editar',['update','id'=>$id],['class'=>'btn btn-primary','role'=>'modal-remote'])
+                    'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                            Html::a('Edit',['update','id'=>$id],['class'=>'btn btn-primary','role'=>'modal-remote'])
                 ];    
             }else{
                  return [
-                    'title'=> "Actualizar Usuario #".$id,
+                    'title'=> "Update Users #".$id,
                     'content'=>$this->renderAjax('update', [
                         'model' => $model,
                     ]),
-                    'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                                Html::button('Guardar',['class'=>'btn btn-primary','type'=>"submit"])
+                    'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                                Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
                 ];        
             }
         }else{

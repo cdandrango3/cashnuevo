@@ -717,11 +717,10 @@ echo "</td>";
             return $this->redirect($url);
         }
         else{
-            Yii::$app->session->addFlash("negative", "My flash message");
+            Yii::$app->session->addFlash("error", "No se puede eliminar la factura");
             $url = $_SERVER['HTTP_REFERER'];
             return $this->redirect($url);
-            return Yii::$app->getResponse()->redirect($url);
-            Yii::$app->end();
+
 
         }
     }
