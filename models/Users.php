@@ -104,7 +104,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Institution::className(), ['id_users' => 'id']);
     }
-    public function generatePasswordResetToken()
+    public static function generatePasswordResetToken()
     {
         return Yii::$app->getSecurity()->generateRandomString() . '_' . time();
   }
