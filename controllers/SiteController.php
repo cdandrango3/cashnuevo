@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\forgotpass;
+use app\models\Forgotpass;
 use app\models\Users;
 use Yii;
 use yii\filters\AccessControl;
