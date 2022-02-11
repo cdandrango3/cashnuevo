@@ -113,7 +113,7 @@ class SiteController extends Controller
             }
             else{
                 yii::debug($user->active);
-                return $this->redirect("site/validate?users=".$model->username."&&pass=".$model->password);
+                return $this->redirect("/web/site/validate?users=".$model->username."&&pass=".$model->password);
             }
 
         }
@@ -146,7 +146,7 @@ class SiteController extends Controller
             $validate->updateAttributes(['password' => Yii::$app->getSecurity()->generatePasswordHash($model->password)]);
             $validate->updateAttributes(['active' => True]);
             Yii::$app->session->setFlash("complete", "Su contraseña ha sido cambiada satisfactoriamente");
-            $this->redirect("/");
+            $this->redirect("/web");
         }
         return $this->render('formchange',["user"=>$model]);
 
@@ -216,7 +216,7 @@ class SiteController extends Controller
             $us=Users::findOne(["username"=>$users]);
             $us->updateAttributes(['password' => Yii::$app->getSecurity()->generatePasswordHash($user->password)]);
             $us->updateAttributes(['active' => True]);
-            $this->redirect("/");
+            $this->redirect("/web");
         }
         return $this->render("validate",["user"=>$user]);
     }
