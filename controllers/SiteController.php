@@ -164,7 +164,7 @@ class SiteController extends Controller
                     ->setSubject('Recuperar contraseña')
                     ->setHtmlBody('
                       <p>Estimado usuario En la parte de abajo va a tener el link para resetear su contraseña</p>
-                      <p>Link</p> <a href="http://localhost:8080/site/formchange?token='.$em->remember_token.'">http://localhost:8080/site/changepassword</a>
+                      <p>Link</p> <a href="http://tgcashpruebas.herokuapp.com/web/site/formchange?token='.$em->remember_token.'">http://localhost:8080/site/changepassword</a>
                       
                       <h1>Gracias por utilizar tg cashbook</h1>
                    ')

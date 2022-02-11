@@ -43,7 +43,7 @@
             <br>
             <br>
 
-            <a href='<?=Url::to("/site/changepassword")?>' style="text-decoration:none;text-color:blue" class="float-center">Olvide mi contraseña</a>
+            <a href='<?=Url::to("web/site/changepassword")?>' style="text-decoration:none;text-color:blue" class="float-center">Olvide mi contraseña</a>
         </div>
 
         </div>
