@@ -32,7 +32,7 @@ app\assets\AppAsset::register($this);
             <?php $form = ActiveForm::begin([
             ]); ?>
         <br><br>
-        <?= $form->field($model, 'user')->textInput(['autofocus' => true])->label('Ingrese su usuario') ?>
+        <?= $form->field($model, 'user')->textInput(['autofocus' => true])->label('Ingrese su usuario o email') ?>
             <?= Html::submitButton('Recuperar contraseña', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
         <?php ActiveForm::end(); ?>
         </center>

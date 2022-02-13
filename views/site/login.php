@@ -6,7 +6,7 @@
     $this->params['breadcrumbs'][] = ['label' => "Home", 'url' => '/'];
     $this->params['breadcrumbs'][] = ['label' => "Module", 'url' => '/site'];
     $this->params['breadcrumbs'][] = ['label' => $this->title, 'active' => true];
-
+app\assets\AppAsset::register($this);
 ?>  
 <style>        
     body{ margin: 0;  }
@@ -43,7 +43,7 @@
             <br>
             <br>
 
-            <a href='<?=Url::to("/web/site/changepassword")?>' style="text-decoration:none;text-color:blue" class="float-center">Olvide mi contraseña</a>
+            <a href='<?=Url::to("web/site/changepassword")?>' style="text-decoration:none;text-color:blue" class="float-center">Olvide mi contraseña</a>
         </div>
 
         </div>
