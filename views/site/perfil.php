@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 if(Yii::$app->session->hasFlash("error")){
@@ -10,26 +9,20 @@ if(Yii::$app->session->hasFlash("error")){
 
 
 }
-app\themes\adminlte3\assets\AdminleAsset::register($this);
-app\assets\AppAsset::register($this);
 ?>
 <div class="container">
-    <div class="ml-5">
-    <img src="<?= Yii::getAlias('@web') . "/images/logo.jpeg" ?>" width=40% height=40%>
-    </div>
-    <br><br><br><br><br>
     <div class="card">
         <div class="card-head bg-primary p-3">
-            cambiar contraseña
+            Perfil
 
         </div>
         <div class="card-body">
             <?php $form=ActiveForm::begin();?>
-            <?= $form->field($user, 'password')->PasswordInput(['maxlength' => true, 'id' => "password"]);?>
+            <?= $form->field($user, 'passanterior')->PasswordInput(['maxlength' => true, 'id' => "pass"])?>
+            <?= $form->field($user, 'password')->PasswordInput(['maxlength' => true, 'id' => "password"])->label("Contraseña Nueva");?>
             <?= $form->field($user, 'passrea')->PasswordInput(['maxlength' => true, 'id' => "password2"])->label("Escriba de nuevo la contraseña");?>
             <?= Html::tag("button","Cambiar contraseña",["class"=>"btn btn-primary float-right"])?>
             <?php ActiveForm::end(); ?>
         </div>
     </div>
 </div>
-

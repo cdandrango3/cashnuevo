@@ -13,7 +13,6 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-
 /* @var $this \yii\web\View */
 /* @var $content string */
 

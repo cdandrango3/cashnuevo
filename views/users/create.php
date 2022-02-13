@@ -1,16 +1,19 @@
 <?php
 
+use app\models\Person;
 use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Users */
-
+$email=\yii\helpers\ArrayHelper::map(Person::find()->all(), 'id', 'emails');
+$emailjson=\yii\helpers\Json::encode($email);
 ?>
 <div class="users-create">
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
+
 </div>
 <?php
 $js=<<< JS
@@ -20,13 +23,19 @@ $js=<<< JS
      var randPassword = Array(pwdLen).fill(pwdChars).map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
      $("#pass").val(randPassword);
      
- })
- function generatepass(length = 20,
-  wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'){
-      Array.from(crypto.getRandomValues(new Uint32Array(length)))
-    .map((x) => wishlist[x % wishlist.length])
-    .join('')
-  }
+ });
+
+ $("#person").change(function(){
+     c=$emailjson;
+     $('#email').val(c[$(this).val()]);
+         
+         
+     
+     
+     
+ });
+
+  
  JS;
 $this->registerJs($js);
 ?>

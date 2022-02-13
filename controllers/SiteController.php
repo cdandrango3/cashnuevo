@@ -43,6 +43,35 @@ class SiteController extends Controller
             ],
         ];
     }
+    public function actionPerfil(){
+        $user=New Users();
+        if ($user->load(Yii::$app->request->post())) {
+           $passv= Yii::$app->getSecurity()->validatePassword($user->passanterior,
+                Yii::$app->user->identity->password);
+            if($passv){
+                if($user->password != $user->passrea){
+                    Yii::debug("aqui estoy");
+                    Yii::$app->session->addFlash("error", "Las contraseñas anterior no coincide");
+                    $url = $_SERVER['HTTP_REFERER'];
+                    return $this->redirect($url);
+                }
+                $us=Users::findOne(["username"=>Yii::$app->user->identity->username]);
+                $us->updateAttributes(['password' => Yii::$app->getSecurity()->generatePasswordHash($user->password)]);
+                $us->updateAttributes(['active' => True]);
+                $this->redirect("/web");
+
+            }
+            else{
+                Yii::$app->session->addFlash("error", "Escribio mal su conraseña vuelva a intentarlo");
+
+            }
+
+        }
+        else{
+            yii::debug($user->errors);
+        }
+        return $this->render('perfil',['user' => $user ]);
+    }
     public function actionUpdate()
     {
         $list = \app\models\ChartAccounts::find()->all();
@@ -131,6 +160,7 @@ class SiteController extends Controller
      */
     public function actionFormchange($token){
         $model=New Users();
+        $this->layout = 'blank';
         $validate=Users::findByPasswordResetToken($token);
         if (is_null($validate)){
             throw new NotFoundHttpException('El token ha expirado');
@@ -153,10 +183,11 @@ class SiteController extends Controller
      }
     public function actionChangepassword(){
         $model=new Forgotpass();
+        $this->layout = 'blank';
         if($model->load(Yii::$app->request->post()) && $model->validate()){
-            $c=Users::find()->where(["username"=>$model->user])->exists();
+            $c=Users::find()->where(["username"=>$model->user])->orFilterWhere(["email"=>$model->user])->exists();
             if ($c){
-                $em=Users::findOne(["username"=>$model->user]);
+                $em=Users::find()->where(["username"=>$model->user])->orFilterWhere(["email"=>$model->user])->one();
                 $em->updateAttributes(['remember_token'=>Users::generatePasswordResetToken()]);
                 Yii::$app->mailer->compose()
                     ->setFrom('cdandrango@gmail.com')
@@ -164,7 +195,7 @@ class SiteController extends Controller
                     ->setSubject('Recuperar contraseña')
                     ->setHtmlBody('
                       <p>Estimado usuario En la parte de abajo va a tener el link para resetear su contraseña</p>
-                      <p>Link</p> <a href="http://tgcashpruebas.herokuapp.com/web/site/formchange?token='.$em->remember_token.'">http://localhost:8080/site/changepassword</a>
+                      <p>Link</p> <a href="http://tgcashpruebas.herokuapp.com/web/site/formchange?token='.$em->remember_token.'">http://tgcashpruebas.herokuapp.com/web/</a>
                       
                       <h1>Gracias por utilizar tg cashbook</h1>
                    ')
@@ -255,3 +286,4 @@ class SiteController extends Controller
         return $this->render('about');
     }
 }
+

@@ -14,11 +14,11 @@ use app\models\Person;
 	<?php
         $var = \yii\helpers\ArrayHelper::map(Person::find()->all(), 'id', 'name');
     ?>
-    <?= $form->field($model, 'person_id')->dropDownList($var, ['prompt' => 'Seleccione el Persona' ]);?>
+    <?= $form->field($model, 'person_id')->dropDownList($var, ['prompt' => 'Seleccione el Persona','id'=>'person' ]);?>
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
 	<?php //<?= $form->field($model, 'remember_token')->textarea(['rows' => 6]) ?> 
 	<?php // <?= $form->field($model, 'forgotpassword_guid')->textarea(['rows' => 6]) ?>
-    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'email')->textInput(['maxlength' => true,'id'=>'email']) ?>
     <?= $form->field($model, 'password')->textInput(['maxlength' => true,'id'=>"pass"]) ?>
 	<?php //    <?= $form->field($model, 'email_verified_at')->textInput() ?>
 	<?php //    <?= $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
@@ -38,3 +38,6 @@ use app\models\Person;
 	<?php } ?>
     <?php ActiveForm::end(); ?>
 </div>
+<?php
+
+?>

@@ -37,6 +37,13 @@ use yii\helpers\Url;
                         )
                         . Html::endForm();
                     ?>
+                    <?php echo Html::beginForm(['/site/perfil'], 'post')
+                        . Html::submitButton(
+                            '<i class="fas fa-sign-out-alt mr-2"></i> Perfil ',
+                            ['class' => 'btn btn-link logout']
+                        )
+                        . Html::endForm();
+                    ?>
                 </div>
             <?php endif; ?>
         </div>

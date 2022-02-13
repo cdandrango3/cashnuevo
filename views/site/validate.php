@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+
 if(Yii::$app->session->hasFlash("error")){
     $c=Yii::$app->session->getFlash('error');
         foreach ($c as  $messa) {

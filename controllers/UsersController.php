@@ -2,8 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\Permissionusuario;
 use Yii;
 use app\models\Users;
+use yii\db\Query;
 use yii\rest\ActiveController;
 use app\models\UsersSearch;
 use yii\web\Controller;
@@ -97,8 +99,8 @@ class UsersController extends Controller
                     'content'=>$this->renderAjax('create', [
                         'model' => $model,
                     ]),
-                    'footer'=> Html::button('Close',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
-                                Html::button('Save',['class'=>'btn btn-primary','type'=>"submit"])
+                    'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                                Html::button('Guardar',['class'=>'btn btn-primary','type'=>"submit"])
         
                 ];         
             }else if($model->load($request->post())){
@@ -225,6 +227,7 @@ class UsersController extends Controller
     public function actionDelete($id)
     {
         $request = Yii::$app->request;
+        $this->query("permission_usuario","id_users",$id);
         $this->findModel($id)->delete();
 
         if($request->isAjax){
@@ -300,5 +303,11 @@ class UsersController extends Controller
         
 
 
+    }
+    public function query($query,$col,$id){
+        (new Query)
+            ->createCommand()
+            ->delete($query, [$col => $id])
+            ->execute();
     }
 }

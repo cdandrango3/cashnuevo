@@ -6,7 +6,7 @@
     $this->params['breadcrumbs'][] = ['label' => "Home", 'url' => '/'];
     $this->params['breadcrumbs'][] = ['label' => "Module", 'url' => '/site'];
     $this->params['breadcrumbs'][] = ['label' => $this->title, 'active' => true];
-	
+
 ?>  
 <style>        
     body{ margin: 0;  }
@@ -19,12 +19,12 @@
 </style>
 
 <div class="container">
-    <div class="left">
+
         <div>  
-            <img src="<?= Yii::getAlias('@web') . "/images/12345.jpg" ?>" width=100% height=100%>   
+            <img src="<?= Yii::getAlias('@web') . "/images/12345.jpg" ?>" width=100% height=100%>
 			
         </div>
-    </div>
+
     <div class="right">
         <center>
             <img src="<?= Yii::getAlias('@web') . "/images/logo.jpeg" ?>" width=80% height=80%>
@@ -43,7 +43,7 @@
             <br>
             <br>
 
-            <a href='<?=Url::to("/web/site/changepassword")?>' style="text-decoration:none;text-color:blue" class="float-center">Olvide mi contraseña</a>
+            <a href='<?=Url::to("/site/changepassword")?>' style="text-decoration:none;text-color:blue" class="float-center">Olvide mi contraseña</a>
         </div>
 
         </div>

@@ -7,7 +7,8 @@
     $this->params['breadcrumbs'][] = ['label' => "Home", 'url' => '/'];
     $this->params['breadcrumbs'][] = ['label' => "Module", 'url' => '/site'];
     $this->params['breadcrumbs'][] = ['label' => $this->title, 'active' => true];
-
+app\themes\adminlte3\assets\AdminleAsset::register($this);
+app\assets\AppAsset::register($this);
 ?>
 <style>
     body{ margin: 0;  }
@@ -18,14 +19,13 @@
         }
         btn-primary{ size:50%; color:#fff;background-color:#337ab7;border-color:#2e6da4}.btn-primary.focus,.btn-primary:focus{color:#fff;background-color:#286090;border-color:#122b40}.btn-primary:hover{color:#fff;background-color:#286090;border-color:#204d74}.btn-primary.active,.btn-primary:active,.open>.dropdown-toggle.btn-primary{color:#fff;background-color:#286090;background-image:none;border-color:#204d74}.btn-primary.active.focus,.btn-primary.active:focus,.btn-primary.active:hover,.btn-primary:active.focus,.btn-primary:active:focus,.btn-primary:active:hover,.open>.dropdown-toggle.btn-primary.focus,.open>.dropdown-toggle.btn-primary:focus,.open>.dropdown-toggle.btn-primary:hover{color:#fff;background-color:#204d74;border-color:#122b40}.btn-primary.disabled.focus,.btn-primary.disabled:focus,.btn-primary.disabled:hover,.btn-primary[disabled].focus,.btn-primary[disabled]:focus,.btn-primary[disabled]:hover,fieldset[disabled] .btn-primary.focus,fieldset[disabled] .btn-primary:focus,fieldset[disabled] .btn-primary:hover{background-color:#337ab7;border-color:#2e6da4}
 </style>
-<div class="container">
-    <div class="left">
-        <div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-4">
 
+            </div>
+        <div class="col-4">
 
-        </div>
-    </div>
-    <div class="right">
         <center>
             <img src="<?= Yii::getAlias('@web') . "/images/logo.jpeg" ?>" width=80% height=80%>
 
@@ -45,7 +45,10 @@
            <div class="alert alert-danger"><?= Yii::$app->session->getFlash('error');?></div>
         <?php endif?>
         </div>
+        <div class="col-4"></div>
     </div>
-</div>
+
+    </div>
+
 
 
