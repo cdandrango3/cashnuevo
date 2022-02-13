@@ -112,7 +112,7 @@ class Users extends \yii\db\ActiveRecord
     {
       $parts = explode('_', $token);
       $timestamp = (int) end($parts);
-      if ($timestamp + 3000 < time()) {
+      if ($timestamp + 300 < time()) {
           return null;
       }
       return static::findOne([
