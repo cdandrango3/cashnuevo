@@ -12,11 +12,8 @@ use yii\widgets\DetailView;
         'attributes' => [
             'id',
             'username',
-            'remember_token:ntext',
-            'forgotpassword_guid:ntext',
             'email:ntext',
             'password:ntext',
-            'email_verified_at:email',
             'auth_key',
             'status:boolean',
             'consumer:boolean',

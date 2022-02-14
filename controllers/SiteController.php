@@ -237,9 +237,10 @@ class SiteController extends Controller
      */
     public function actionValidate($users,$pass){
         $user=New Users();
+        $this->layout = 'blank';
         if ($user->load(Yii::$app->request->post())) {
             if($user->password != $user->passrea){
-                Yii::debug("aqui estoy");
+
                 Yii::$app->session->addFlash("error", "Las contraseñas no coinciden");
                 $url = $_SERVER['HTTP_REFERER'];
                 return $this->redirect($url);
