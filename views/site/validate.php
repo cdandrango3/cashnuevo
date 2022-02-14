@@ -14,7 +14,11 @@ if(Yii::$app->session->hasFlash("error")){
 }
 ?>
 <div class="container">
+    <div class="ml-5">
+        <img src="<?= Yii::getAlias('@web') . "/images/logo.jpeg" ?>" width=40% height=40%>
+    </div>
 <div class="card">
+
     <div class="card-head bg-primary p-3">
       cambiar contraseña
 

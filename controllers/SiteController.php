@@ -142,7 +142,7 @@ class SiteController extends Controller
             }
             else{
                 yii::debug($user->active);
-                return $this->redirect("/web/site/validate?users=".$model->username."&&pass=".$model->password);
+                return $this->redirect("/web/site/validate");
             }
 
         }
