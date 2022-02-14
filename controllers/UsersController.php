@@ -121,7 +121,7 @@ class UsersController extends Controller
                    ')
                         ->send();
                     yii::debug("here");
-                }
+
                 return [
                     'forceReload'=>'#crud-datatable-pjax',
                     'title'=> "Crear Nuevo Usuario",
@@ -129,7 +129,8 @@ class UsersController extends Controller
                     'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
                             Html::a('Crear Mas',['create'],['class'=>'btn btn-primary','role'=>'modal-remote'])
 
-                ];         
+                ];
+                    }
             } else{
                yii::debug($model->errors);
                 return [
