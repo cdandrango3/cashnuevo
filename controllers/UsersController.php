@@ -131,8 +131,15 @@ class UsersController extends Controller
 
                 ];
                     }
+                else{
+                    return [
+                        'forceReload'=>'#crud-datatable-pjax',
+                        'title'=> "Crear Nuevo Usuario",
+                        'content'=>'<span class="text-success">Ha ocurrido un error intentelo mas tarde </span>'
+                    ];
+                }
             } else{
-               yii::debug($model->errors);
+
                 return [
                     'title'=> "Crear Nuevo Usuario",
                     'content'=>$this->renderAjax('create', [
