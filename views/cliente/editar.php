@@ -185,26 +185,22 @@ Modal::end();
         console.log(tip)
         if(tip=="Cliente"){
             f=JSON.parse('<?php echo $prelist?>');
+            $("#vendedor").hide()
+            $("#vendedor").val("")
+            $("#ven").hide()
+            $(".preu").val("");
 
         }
         else {
             if (tip == "Proveedor") {
                 f = JSON.parse('<?php echo $lcosto?>');
-
-            }
-        }
-            tipo=$(this).val()
-            if (tipo=="Proveedor") {
-                $("#vendedor").hide()
-                $("#vendedor").val("")
-                $("#ven").hide()
-                $(".preu").val("");
-            }
-            else{
                 $("#vendedor").show()
                 $(".preu").val("");
                 $("#ven").show()
             }
+        }
+        
+
 
 
             $.get('<?php echo Yii::$app->request->baseUrl. '/cliente/getdata' ?>',{data:tipo},function(data){
@@ -214,7 +210,7 @@ Modal::end();
 
 
 
-         
+
         $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
         $(document).on('keyup','.preu',function(){
             precio=$(this).val()
