@@ -133,9 +133,13 @@ class UsersController extends Controller
                     }
                 else{
                     return [
-                        'forceReload'=>'#crud-datatable-pjax',
                         'title'=> "Crear Nuevo Usuario",
-                        'content'=>'<span class="text-success">Ha ocurrido un error intentelo mas tarde </span>'
+                        'content'=>$this->renderAjax('create', [
+                            'model' => $model,
+                        ]),
+                        'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
+                            Html::button('Guardar',['class'=>'btn btn-primary','type'=>"submit"])
+
                     ];
                 }
             } else{
