@@ -115,7 +115,7 @@ class UsersController extends Controller
                       <p>En la parte de abajo va a tener su usuario y contraseña para el ingreso del sistema </p>
                       <p>User</p>' . $model->username . '<br>
                       <p>Contraseña</p>' . $password . '<br>
-                      <p>Link</p> <a href="http://tgcashpruebas.herokuapp.com/web/site/logout">http://tgcashpruebas.herokuapp.com/web/</a>
+                      <p>Link</p> <a href="http://tgcashpruebas.herokuapp.com/web">http://tgcashpruebas.herokuapp.com/web/</a>
                       
                       <h1>Gracias por utilizar tg cashbook</h1>
                    ')

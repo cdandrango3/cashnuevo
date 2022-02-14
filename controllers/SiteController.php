@@ -142,7 +142,7 @@ class SiteController extends Controller
             }
             else{
                 yii::debug($user->active);
-                return $this->redirect("/web/site/validate?users=".$model->username."&&pass=".$model->password);
+                return $this->redirect("/web/site/validate");
             }
 
         }
@@ -235,7 +235,7 @@ class SiteController extends Controller
      *
      * @return Response
      */
-    public function actionValidate($users,$pass){
+    public function actionValidate(){
         $user=New Users();
         $this->layout = 'blank';
         if ($user->load(Yii::$app->request->post())) {
