@@ -199,13 +199,6 @@ Modal::end();
                 $("#ven").show()
             }
         }
-        
-
-
-
-            $.get('<?php echo Yii::$app->request->baseUrl. '/cliente/getdata' ?>',{data:tipo},function(data){
-
-                datos=data;
 
 
 
