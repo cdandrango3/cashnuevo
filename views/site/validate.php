@@ -2,7 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
+app\themes\adminlte3\assets\AdminleAsset::register($this);
+app\assets\AppAsset::register($this);
 if(Yii::$app->session->hasFlash("error")){
     $c=Yii::$app->session->getFlash('error');
         foreach ($c as  $messa) {

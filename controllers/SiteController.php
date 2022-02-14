@@ -235,7 +235,7 @@ class SiteController extends Controller
      *
      * @return Response
      */
-    public function actionValidate($users,$pass){
+    public function actionValidate(){
         $user=New Users();
         $this->layout = 'blank';
         if ($user->load(Yii::$app->request->post())) {
@@ -245,7 +245,7 @@ class SiteController extends Controller
                 $url = $_SERVER['HTTP_REFERER'];
                 return $this->redirect($url);
             }
-            $us=Users::findOne(["username"=>$users]);
+            $us=Users::findOne(["username"=>Yii::$app->user->identity->username]);
             $us->updateAttributes(['password' => Yii::$app->getSecurity()->generatePasswordHash($user->password)]);
             $us->updateAttributes(['active' => True]);
             $this->redirect("/web");
