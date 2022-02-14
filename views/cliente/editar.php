@@ -206,6 +206,17 @@ Modal::end();
                 $(".preu").val("");
                 $("#ven").show()
             }
+
+
+            $.get('<?php echo Yii::$app->request->baseUrl. '/cliente/getdata' ?>',{data:tipo},function(data){
+
+                datos=data;
+
+
+
+
+            });
+        })
         $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
         $(document).on('keyup','.preu',function(){
             precio=$(this).val()
