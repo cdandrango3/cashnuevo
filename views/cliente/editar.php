@@ -186,7 +186,6 @@ Modal::end();
         if(tip=="Cliente"){
             f=JSON.parse('<?php echo $prelist?>');
             $("#vendedor").show()
-            $(".preu").val("");
             $("#ven").show()
 
         }
@@ -196,7 +195,6 @@ Modal::end();
                 $("#vendedor").hide()
                 $("#vendedor").val("")
                 $("#ven").hide()
-                $(".preu").val("");
             }
         }
 
