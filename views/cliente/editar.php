@@ -185,18 +185,18 @@ Modal::end();
         console.log(tip)
         if(tip=="Cliente"){
             f=JSON.parse('<?php echo $prelist?>');
-            $("#vendedor").hide()
-            $("#vendedor").val("")
-            $("#ven").hide()
+            $("#vendedor").show()
             $(".preu").val("");
+            $("#ven").show()
 
         }
         else {
             if (tip == "Proveedor") {
                 f = JSON.parse('<?php echo $lcosto?>');
-                $("#vendedor").show()
+                $("#vendedor").hide()
+                $("#vendedor").val("")
+                $("#ven").hide()
                 $(".preu").val("");
-                $("#ven").show()
             }
         }
 
