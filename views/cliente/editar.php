@@ -193,6 +193,19 @@ Modal::end();
 
             }
         }
+        $('#tipodocu').change(function(){
+            tipo=$(this).val()
+            if (tipo=="Proveedor") {
+                $("#vendedor").hide()
+                $("#vendedor").val("")
+                $("#ven").hide()
+                $(".preu").val("");
+            }
+            else{
+                $("#vendedor").show()
+                $(".preu").val("");
+                $("#ven").show()
+            }
         $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
         $(document).on('keyup','.preu',function(){
             precio=$(this).val()
