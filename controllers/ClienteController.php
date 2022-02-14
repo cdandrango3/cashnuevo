@@ -956,7 +956,7 @@ echo "</td>";
                                 $accounting_sea->head_fact = $model->n_documentos;
                                 $accounting_sea->id = $gr;
                                 $accounting_sea->institution_id = 1;
-                                $accounting_sea->description = "fact2";
+                                $accounting_sea->description = "inventario";
                                 $accounting_sea->nodeductible = true;
                                 $accounting_sea->type = "inventario";
                                 $accounting_sea->status = true;
