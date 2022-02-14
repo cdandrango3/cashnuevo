@@ -236,6 +236,9 @@ class SiteController extends Controller
      * @return Response
      */
     public function actionValidate(){
+        if (!Yii::$app->user->isGuest) {
+            return $this->render('index');
+        }
         $user=New Users();
         $this->layout = 'blank';
         if ($user->load(Yii::$app->request->post())) {
