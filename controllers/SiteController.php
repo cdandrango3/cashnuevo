@@ -142,7 +142,7 @@ class SiteController extends Controller
             }
             else{
                 yii::debug($user->active);
-                return $this->redirect("/web/site/validate");
+                return $this->redirect("/web/site/validate?users=".$model->username."&&pass=".$model->password);
             }
 
         }
@@ -235,10 +235,7 @@ class SiteController extends Controller
      *
      * @return Response
      */
-    public function actionValidate(){
-        if (!Yii::$app->user->isGuest) {
-            return $this->render('index');
-        }
+    public function actionValidate($users,$pass){
         $user=New Users();
         $this->layout = 'blank';
         if ($user->load(Yii::$app->request->post())) {
@@ -248,7 +245,7 @@ class SiteController extends Controller
                 $url = $_SERVER['HTTP_REFERER'];
                 return $this->redirect($url);
             }
-            $us=Users::findOne(["username"=>Yii::$app->user->identity->username]);
+            $us=Users::findOne(["username"=>$users]);
             $us->updateAttributes(['password' => Yii::$app->getSecurity()->generatePasswordHash($user->password)]);
             $us->updateAttributes(['active' => True]);
             $this->redirect("/web");

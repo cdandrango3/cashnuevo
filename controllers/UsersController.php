@@ -63,7 +63,7 @@ class UsersController extends Controller
         if($request->isAjax){
             Yii::$app->response->format = Response::FORMAT_JSON;
             return [
-                    'title'=> "Users #".$id,
+                    'title'=> "Usuario #".$id,
                     'content'=>$this->renderAjax('view', [
                         'model' => $this->findModel($id),
                     ]),
@@ -176,7 +176,7 @@ class UsersController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             if($request->isGet){
                 return [
-                    'title'=> "Update Users #".$id,
+                    'title'=> "Actualizar Usuario N #".$id,
                     'content'=>$this->renderAjax('update', [
                         'model' => $model,
                     ]),
