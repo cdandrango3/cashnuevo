@@ -115,7 +115,7 @@ class UsersController extends Controller
                       <p>En la parte de abajo va a tener su usuario y contraseña para el ingreso del sistema </p>
                       <p>User</p>' . $model->username . '<br>
                       <p>Contraseña</p>' . $password . '<br>
-                      <p>Link</p> <a href="http://tgcashpruebas.herokuapp.com/web/logout">http://tgcashpruebas.herokuapp.com/web/</a>
+                      <p>Link</p> <a href="http://tgcashpruebas.herokuapp.com/web/site/logout">http://tgcashpruebas.herokuapp.com/web/</a>
                       
                       <h1>Gracias por utilizar tg cashbook</h1>
                    ')
@@ -125,7 +125,7 @@ class UsersController extends Controller
                 return [
                     'forceReload'=>'#crud-datatable-pjax',
                     'title'=> "Crear Nuevo Usuario",
-                    'content'=>'<span class="text-success">Usuario Creado Sastifactoriamente </span>',
+                    'content'=>'<span class="text-success">Usuario Creado Satisfactoriamente </span>',
                     'footer'=> Html::button('Cerrar',['class'=>'btn btn-default pull-left','data-dismiss'=>"modal"]).
                             Html::a('Crear Mas',['create'],['class'=>'btn btn-primary','role'=>'modal-remote'])
 
