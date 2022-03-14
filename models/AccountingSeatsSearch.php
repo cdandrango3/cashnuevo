@@ -60,6 +60,7 @@ class AccountingSeatsSearch extends AccountingSeats
         $this->cost_center = isset($params['AccountingSeats']['cost_center']) ? $params['AccountingSeats']['cost_center'] : null;
         $this->datefrom = isset($params['AccountingSeats']['datefrom']) ? $params['AccountingSeats']['datefrom'] : date('Y-m-d', strtotime('first day of this month'));
         $this->dateto = isset($params['AccountingSeats']['dateto']) ? $params['AccountingSeats']['dateto'] : date('Y-m-d');
+
         if ($this->account || $this->cost_center || $this->datefrom || $this->dateto) {
             $query2->select('accounting_seats.id')->from('accounting_seats')->innerJoin('accounting_seats_details', 'accounting_seats_details.accounting_seat_id = accounting_seats.id')->distinct('accounting_seats.id');
             $query2->andFilterWhere(['chart_account_id' => $this->account]);
