@@ -80,7 +80,7 @@ class AccountingSeatsSearch extends AccountingSeats
             $query->andFilterWhere([
                 'id' => $this->id,
                 'date' => $this->date,
-                'institution_id' => $this->institution_id,
+                'institution_id' => 1,
                 'nodeductible' => $this->nodeductible,
                 'status' => $this->status,
 

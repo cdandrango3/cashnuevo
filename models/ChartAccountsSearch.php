@@ -42,7 +42,9 @@ class ChartAccountsSearch extends ChartAccounts
      * @return ActiveDataProvider
      */
     public function search($params)
+
     {
+    $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
         $query = $this::find()->select(["*,
         (select count(*) as childs from chart_accounts as t6 where t6.parent_id = t.id)
         ,
@@ -55,7 +57,7 @@ class ChartAccountsSearch extends ChartAccounts
                 INNER JOIN public.accounting_seats as t4 ON (t5.accounting_seat_id = t4.id)
                 INNER JOIN public.chart_accounts as t3 ON (t5.chart_account_id = t3.id)
               WHERE
-                t4.institution_id = t.institution_id AND  
+                t4.institution_id = ".$id_ins->id."AND  
                 substring(t3.code, 1, char_length((t.code))) = (t.code)           
                 )
         )"])->alias('t');
@@ -82,7 +84,7 @@ class ChartAccountsSearch extends ChartAccounts
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'institution_id' => $this->institution_id,
+            'institution_id' => $id_ins->id,
             'bigparent_id' => $this->bigparent_id,
             'parent_id' => $this->parent_id,
             'status' => $this->status,
@@ -111,7 +113,7 @@ class ChartAccountsSearch extends ChartAccounts
         }
         $tmodel = $this::findOne($this->account);
         $accounts = ChartAccounts::find()->select(["*,
-        (select count(*) as childs from chart_accounts as t6 where t6.parent_id = t.id)
+        (select count(*) as childs from chart_accounts as t6 where t6.parent_id = t.id  )
         ,
         (
             (
@@ -123,12 +125,12 @@ class ChartAccountsSearch extends ChartAccounts
                 INNER JOIN public.chart_accounts as t3 ON (t5.chart_account_id = t3.id)
               WHERE
                 t4.date < '$this->datefrom' and 
-                t4.institution_id = t.institution_id AND 
+                t4.institution_id = 1 AND 
                 substring(t3.code, 1, char_length(t.code)) = t.code           
                 )
         )"])
             ->andWhere("substring(t.code, 1, char_length('$tmodel->code')) = '$tmodel->code'")
-            ->andWhere(['institution_id' => $this->institution_id])
+            ->andWhere(['institution_id' => 1])
             ->alias('t')
             ->orderBy(['code' => SORT_ASC, 'parent_id' => SORT_ASC])
             ->all();
