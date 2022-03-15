@@ -34,15 +34,20 @@ public function actionIndex($tipos){
     $models=New clients;
     $modelhead=New HeadFact;
     $modelf=New Facturafin;
+    $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
     if($tipos=="Cliente"){
-        $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Cliente"]);
+
+        $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Cliente"])->andWhere(["institution_id"=>
+        $id_ins->id]);
     }
     else{
         if ($tipos=="Proveedor") {
-            $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Proveedor"]);
+            $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Proveedor"])->andWhere(["institution_id"=>
+                $id_ins->id]);;
         }
         else{
-            $query1 = HeadFact::find();
+            $query1 = HeadFact::find()->andWhere(["institution_id"=>
+                $id_ins->id]);
         }
 
     }

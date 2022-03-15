@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -46,6 +47,8 @@ class AccountingSeatsSearch extends AccountingSeats
      */
     public function search($params)
     {
+
+        $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
         $query = AccountingSeats::find();
         $query2 = AccountingSeatsDetails::find();
         // add conditions that should always apply here
@@ -64,6 +67,7 @@ class AccountingSeatsSearch extends AccountingSeats
         if ($this->account || $this->cost_center || $this->datefrom || $this->dateto) {
             $query2->select('accounting_seats.id')->from('accounting_seats')->innerJoin('accounting_seats_details', 'accounting_seats_details.accounting_seat_id = accounting_seats.id')->distinct('accounting_seats.id');
             $query2->andFilterWhere(['chart_account_id' => $this->account]);
+            $query2->andFilterWhere(['institution_id' => $id_ins->id]);
             $query2->andFilterWhere(['cost_center_id' => $this->cost_center]);
             $query2->andFilterWhere(['between', 'date', $this->datefrom, $this->dateto]);
             $query2->andWhere(['accounting_seats_details.status' => 1, 'accounting_seats.status' => 1]);
