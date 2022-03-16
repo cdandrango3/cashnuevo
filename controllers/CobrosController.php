@@ -10,6 +10,7 @@ use app\models\ChargesDetail;
 use app\models\ChartAccounts;
 use app\models\Facturafin;
 use app\models\HeadFact;
+use app\models\Institution;
 use app\models\Person;
 use DateTime;
 use Yii;
@@ -30,6 +31,7 @@ $id=$_GET['id'];
 $body=Facturafin::findOne(["id_head"=>$id]);
 $header=$Header->findOne(["n_documentos"=>$id]);
 $persona=$Persona::findOne(["id"=>$header->id_personas]);
+    $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
     $upt=$chargem::find()->where(["n_document"=>$header->n_documentos])->exists();
 if($chargem->load(Yii::$app->request->post())) {
     $chargem->id = $this->getid();
@@ -89,6 +91,7 @@ if($chargem->validate()){
         if ($charges_detail->amount <= $body->total) {
             $chargem->n_document = $header->n_documentos;
             $chargem->person_id = $persona->id;
+            $chargem->institution_id = $id_ins->id;
             $chargem->save();
             if ($chargem->save()) {
 
@@ -99,7 +102,6 @@ if($chargem->validate()){
                 if ($charges_detail->save()) {
                     $charges_detail->updateAttributes(['saldo' => ($body->total) - ($charges_detail->amount)]);
                 }
-
 
                 $gr = rand(1, 100090000);
                 $charges_detail->updateAttributes(['id_asiento' => $gr]);
@@ -150,9 +152,11 @@ public function getid(){
     return $id;
 }
 public function asientoscreate($gr,$debe,$haber,$body,$id_head,$description){
+    $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
+
     $accounting_sea=new AccountingSeats;
     $accounting_sea->id= $gr;
-    $accounting_sea->institution_id=1;
+    $accounting_sea->institution_id=$id_ins->id;
     $accounting_sea->description=$description;
     $accounting_sea->head_fact=$id_head;
     $accounting_sea->nodeductible=false;
