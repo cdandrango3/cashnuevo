@@ -30,24 +30,25 @@ class ClienteController extends controller
 {
     public $id;
     public $id_product;
+    public $id_ins=0;
 public function actionIndex($tipos){
     $models=New clients;
     $modelhead=New HeadFact;
     $modelf=New Facturafin;
-    $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
+    $_SESSION['id_ins'] = Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
     if($tipos=="Cliente"){
 
-        $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Cliente"])->andWhere(["institution_id"=>
-        $id_ins->id]);
+        $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->where(["tipo_de_documento"=>"Cliente"])->andWhere(["institution_id"=>
+            $_SESSION['id_ins']->id]);
     }
     else{
         if ($tipos=="Proveedor") {
-            $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Proveedor"])->andWhere(["institution_id"=>
-                $id_ins->id]);;
+            $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->where(["tipo_de_documento"=>"Proveedor"])->andWhere(["institution_id"=>
+                $_SESSION['id_ins']->id]);;
         }
         else{
-            $query1 = HeadFact::find()->andWhere(["institution_id"=>
-                $id_ins->id]);
+            $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->andWhere(["institution_id"=>
+                $_SESSION['id_ins']->id]);
         }
 
     }
@@ -95,16 +96,17 @@ public function actionIndex($tipos){
         $facturafin = new Facturafin;
         $accounting_seats=new AccountingSeats;
         $accounting_seats_details=New AccountingSeatsDetails;
-        $persona = $person::find()->select("name")->innerJoin("clients","person.id=clients.person_id")->all();
+        $persona = $person::find()->select("name")->innerJoin("clients","person.id=clients.person_id")->where(["institution_id"=>
+            $_SESSION['id_ins']->id])->all();
         $model_tipo=$model_tip::find()->select("name")->all();
         $pro = $productos::find()->select("name")->all();
         $precio = $productos::find()->all();
         $precioser = $productos::find()->where(['product_type_id'=>2])->all();
         $d= Yii::$app->request->post('Facturafin');
         $per= Yii::$app->request->post('Person');
-        $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->all();
-        $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->all();
-        $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->all();
+        $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
+        $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
+        $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         if ($model->load(Yii::$app->request->post())) {
             $model->id_personas=$per["id"];
             $model->id_saleman=$per["id_ven"];
