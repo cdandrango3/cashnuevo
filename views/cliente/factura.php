@@ -78,7 +78,7 @@ $model->f_timestamp=date("Y-m-d")
         '])?>
             <?=$form->field($ven[0],"id")->dropDownList($listruc,['prompt'=>'Select...',"id"=>"dop1"])->label("Persona");?>
             <?= HTML::label("Vendedor","d",["id"=>"ven"])?>
-            <?=$form->field($salesman[0],"id_ven")->dropDownList($sales,['prompt'=>'Select...',"id"=>"vendedor"])->label(false);?>
+            <?=$salesman?$form->field($salesman[0],"id_ven")->dropDownList($sales,['prompt'=>'Select...',"id"=>"vendedor"])->label(false):""?>
 
             <?= $form->field($model, 'Entregado')->checkBox(['label' => 'Entregado']);  ?>
 

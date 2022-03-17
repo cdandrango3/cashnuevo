@@ -2,9 +2,9 @@
 /**/
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'pgsql:host=localhost;dbname=cashbook',
+    'dsn' => 'pgsql:host=localhost;dbname=tre1',
     'username' => 'postgres',
-    'password' => 'yocrist1',
+    'password' => 'barcelona97.',
     'charset' => 'utf8',
     'schemaMap' => [
         'pgsql'=> [

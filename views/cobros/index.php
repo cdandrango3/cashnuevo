@@ -2,6 +2,7 @@
 error_reporting(E_ALL ^ E_NOTICE);
 ?>
 <?php use app\models\FacturaBody;
+use app\models\Institution;
 use kartik\date\DatePicker;
 use kartik\depdrop\DepDrop;
 use kartik\select2\Select2;
@@ -13,10 +14,12 @@ use yii\widgets\ActiveForm;
 error_reporting(E_ALL ^ E_NOTICE);
 $this->title = 'Registrar Cobro/Pagos';
 $this->params['breadcrumbs'][] = $this->title;
+$id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
 $chart_account=ArrayHelper::map(\app\models\ChartAccounts::find()
     ->Select(["id,concat(code,' ',slug) as name"])
     ->alias('t')
-    ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->andWhere(['parent_id'=>13123])->asArray()->all(),'id', 'name');
+    ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->andWhere(['parent_id'=>13123])->andwhere(['institution_id' => $id_ins->id])->asArray()->all(),'id', 'name');
+
 if ($upt==true){
    $v=1;
 }
@@ -139,10 +142,10 @@ $form->field($charguesd,'Description')->label("Descripción")->textarea(['rows' 
            <td><?=$body->total?></td>
            <?php } else {?>
                <?php $d=$chargem::findOne(["n_document"=>$header->n_documentos]);
-               $ac=$charguesd::find(["id_charge"=>$d->id])->orderBy([
+               $ac=$charguesd::find()->where(["id_charge"=>$d->id])->orderBy([
                    'date' => SORT_DESC
                ])->one();
-
+               Yii::debug($d->id)
                ?>
            <td><?=$ac->saldo?></td>
            <?php } ?>

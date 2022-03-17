@@ -38,16 +38,16 @@ public function actionIndex($tipos){
     $_SESSION['id_ins'] = Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
     if($tipos=="Cliente"){
 
-        $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->where(["tipo_de_documento"=>"Cliente"])->andWhere(["institution_id"=>
+        $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->where(["head_fact.tipo_de_documento"=>"Cliente"])->andWhere(["person.institution_id"=>
             $_SESSION['id_ins']->id]);
     }
     else{
         if ($tipos=="Proveedor") {
-            $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->where(["tipo_de_documento"=>"Proveedor"])->andWhere(["institution_id"=>
+            $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->where(["head_fact.tipo_de_documento"=>"Proveedor"])->andWhere(["person.institution_id"=>
                 $_SESSION['id_ins']->id]);;
         }
         else{
-            $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->andWhere(["institution_id"=>
+            $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->andWhere(["person.institution_id"=>
                 $_SESSION['id_ins']->id]);
         }
 
@@ -133,14 +133,14 @@ public function actionIndex($tipos){
                         $accou_c = $ch1->chart_account_id;
                         $ins = $person::findOne(['id' => $model->id_personas]);
                         $ins = $person::findOne(['id' => $model->id_personas]);
-                        $id_ins = $ins->institution_id;
+
                         $descripcion = $facturafin->description;
                         $nodeductible = False;
                         $status = True;
                         $h = rand(1, 10000000);
                         $accounting_seats->id = $h;
                         $accounting_seats->head_fact = $model->n_documentos;
-                        $accounting_seats->institution_id = $id_ins;
+                        $accounting_seats->institution_id = $_SESSION['id_ins']->id;
                         $accounting_seats->description = $descripcion;
                         $accounting_seats->nodeductible = $nodeductible;
                         $accounting_seats->status = $status;
@@ -231,7 +231,7 @@ public function actionIndex($tipos){
                                 $accounting_sea = new AccountingSeats;
                                 $accounting_sea->head_fact = $model->n_documentos;
                                 $accounting_sea->id = $gr;
-                                $accounting_sea->institution_id = $id_ins;
+                                $accounting_sea->institution_id =$_SESSION['id_ins']->id;
                                 $accounting_sea->description = $descripcion;
                                 $accounting_sea->nodeductible = $nodeductible;
                                 $accounting_sea->status = $status;
@@ -296,14 +296,14 @@ public function actionIndex($tipos){
                             $ch1 = Providers::findOne(['person_id' => $model->id_personas]);
                             $accou_c = $ch1->paid_chart_account_id;
                             $ins = $person::findOne(['id' => $model->id_personas]);
-                            $id_ins = $ins->institution_id;
+
 
                            $descripcion = $facturafin->description;
                            $nodeductible = False;
                             $status = True;
                             $accounting_seats->head_fact = $model->n_documentos;
                             $accounting_seats->id = $h;
-                            $accounting_seats->institution_id = $id_ins;
+                            $accounting_seats->institution_id = $_SESSION['id_ins']->id;
                             $accounting_seats->description = $descripcion;
                             $accounting_seats->nodeductible = $nodeductible;
                             $accounting_seats->status = $status;
@@ -441,7 +441,7 @@ public function actionGetdata($data){
     $model3=New Person;
 if ($data=="Proveedor"){
     $model2::find()->all();
-    $c=$model3::find()->innerJoin('providers',"person.id=providers.person_id")->all();
+    $c=$model3::find()->innerJoin('providers',"person.id=providers.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
     foreach($c as $co){
         echo "<option value='$co->id'>$co->name</option>";
     }
@@ -449,7 +449,7 @@ if ($data=="Proveedor"){
 else{
     if ($data=="Cliente"){
         $model2::find()->all();
-        $c=$model3::find()->innerJoin('clients',"person.id=clients.person_id")->all();
+        $c=$model3::find()->innerJoin('clients',"person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         foreach($c as $co){
             echo "<option value='$co->id'>$co->name</option>";
         }
@@ -962,7 +962,7 @@ echo "</td>";
                                 $gr = rand(1, 100090000);
                                 $accounting_sea->head_fact = $model->n_documentos;
                                 $accounting_sea->id = $gr;
-                                $accounting_sea->institution_id = 1;
+                                $accounting_sea->institution_id = $_SESSION['id_ins']->id;
                                 $accounting_sea->description = "inventario";
                                 $accounting_sea->nodeductible = true;
                                 $accounting_sea->type = "inventario";
@@ -1004,7 +1004,7 @@ echo "</td>";
                                 $gr = rand(1, 100090000);
                                 $accounting_sea->head_fact = $model->n_documentos;
                                 $accounting_sea->id = $gr;
-                                $accounting_sea->institution_id = 1;
+                                $accounting_sea->institution_id = $_SESSION['id_ins']->id;
                                 $accounting_sea->description = "fact2";
                                 $accounting_sea->nodeductible = true;
                                 $accounting_sea->status = true;

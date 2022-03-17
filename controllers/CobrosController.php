@@ -31,7 +31,6 @@ $id=$_GET['id'];
 $body=Facturafin::findOne(["id_head"=>$id]);
 $header=$Header->findOne(["n_documentos"=>$id]);
 $persona=$Persona::findOne(["id"=>$header->id_personas]);
-    $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
     $upt=$chargem::find()->where(["n_document"=>$header->n_documentos])->exists();
 if($chargem->load(Yii::$app->request->post())) {
     $chargem->id = $this->getid();
@@ -44,6 +43,7 @@ if($chargem->validate()){
         $li=ChargesDetail::find()->orderBy([
             'date' => SORT_DESC
         ])->where(["id_charge"=>$ac->id])->asArray()->one();
+        Yii::debug($li);
         $saldo_anterior=$li["saldo"];
         if($charges_detail->load(Yii::$app->request->post())) {
             if($charges_detail->amount>$saldo_anterior){
@@ -91,7 +91,6 @@ if($chargem->validate()){
         if ($charges_detail->amount <= $body->total) {
             $chargem->n_document = $header->n_documentos;
             $chargem->person_id = $persona->id;
-            $chargem->institution_id = $id_ins->id;
             $chargem->save();
             if ($chargem->save()) {
 
@@ -185,9 +184,10 @@ public function asientoscreate($gr,$debe,$haber,$body,$id_head,$description){
     }
 }
    public function actionSubcat($data){
+       $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
         if ($data=="Transferencia"){
             $chart_account=\app\models\BankDetails::find()
-                ->all();
+                ->where(['institution_id' =>$id_ins->id])->all();
             foreach($chart_account as $co){
                 echo "<option value='$co->chart_account_id'>$co->name</option>";
             }
@@ -195,7 +195,7 @@ public function asientoscreate($gr,$debe,$haber,$body,$id_head,$description){
         else{
             if ($data=="Caja" || $data=="Cheque" ){
                 $chart_account=\app\models\ChartAccounts::find()
-                    ->where(['parent_id'=>13123])->all();;
+                    ->where(['parent_id'=>13123])->andWhere(['institution_id' =>$id_ins->id])->all();;
                 foreach($chart_account as $co){
                     echo "<option value='$co->id'>$co->code $co->slug</option>";
                 }

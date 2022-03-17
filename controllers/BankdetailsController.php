@@ -156,7 +156,7 @@ class BankdetailsController extends Controller
     }
     public function actionTransaction(){
         $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
-        $model=ChargesDetail::find()->innerJoin("charges","charges_detail.id_charge=charges.id")->where(["charges_detail.type_transaccion"=>"Transferencia"])->andWhere(["charges.institution_id"=>$id_ins->id])->all();
+        $model=ChargesDetail::find()->innerJoin("charges","charges_detail.id_charge=charges.id")->innerJoin("person","charges.person_id=person.id")->where(["charges_detail.type_transaccion"=>"Transferencia"])->andWhere(["person.institution_id"=>$id_ins->id])->all();
         $model2=New Charges;
 
         return $this->render('transaccion', [
