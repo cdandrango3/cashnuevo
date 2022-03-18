@@ -1,0 +1,20 @@
+<svg height="448" viewBox="0 0 1180 448" width="1180" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="c" x1="50%" x2="50%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#BCE17E"/>
+      <stop offset="100%" stop-color="#87BF48"/>
+    </linearGradient>
+    <path d="M169.527 4078.53C357.626 4007.51 542.67 3972 724.657 3972c181.962 0 363.925 35.5 545.887 106.5a7 7 0 0 1 4.456 6.52V4343a7 7 0 0 1-7 7H172a7 7 0 0 1-7-7v-257.922a7 7 0 0 1 4.527-6.549z"
+          id="b"/>
+    <filter filterUnits="objectBoundingBox" height="129.1%" id="a" width="109.9%" x="-5%" y="-13.2%">
+      <feOffset dy="5" in="SourceAlpha" result="shadowOffsetOuter1"/>
+      <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="17.5"/>
+      <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0"/>
+    </filter>
+  </defs>
+  <g fill="none" fill-rule="evenodd" transform="translate(-130 -3942)">
+    <use fill="#000" filter="url(#a)" xlink:href="#b"/>
+    <use fill="url(#c)" xlink:href="#b"/>
+  </g>
+</svg>

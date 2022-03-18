@@ -1,0 +1,17 @@
+<svg data-name="Layer 1" id="Layer_1" viewBox="0 0 1681.8 2400" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient gradientTransform="matrix(1440, 0, 0, -1885, 372240.52, 3111943.4)" gradientUnits="userSpaceOnUse" id="linear-gradient" x1="-257.92" x2="-257.92"
+                    y1="1650.87" y2="1649.71">
+      <stop offset="0" stop-color="#836fd1"/>
+      <stop offset="1" stop-color="#01518C"/>
+    </linearGradient>
+  </defs>
+  <title>background-landing</title>
+  <path d="M0,221.49Q296.07,45,658.71,45q596.8,14.05,1023.09,370.18V1901.73q-290.11,265.58-751,317.37T0,2219.1V221.49Z"
+        style="fill-rule:evenodd;fill:url(#linear-gradient)" transform="translate(0)"/>
+  <path d="M1681.8,0s-495.66,61.54-503.92,592.61C1169.82,1111.31,1681.8,1200,1681.8,1200Z" style="fill:#836fd1;opacity:0.3"
+        transform="translate(0)"/>
+  <path d="M478.67,1921.86c0-262.27-213.8-475.23-478.67-478.15V2400C264.87,2397.08,478.67,2184.13,478.67,1921.86Z"
+        style="fill:#836fd1;opacity:0.3" transform="translate(0)"/>
+</svg>

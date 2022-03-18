@@ -1,0 +1,25 @@
+<svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>.cls-1 {
+      fill: #fff;
+    }
+
+    .cls-2 {
+      fill: #312c30;
+      fill-rule: evenodd;
+    }</style>
+  </defs>
+  <title>FacebookIcon</title>
+  <g data-name="Layer 3" id="Layer_3">
+    <g id="facebookIcon">
+      <g data-name="Group 53" id="Group_53">
+        <path class="cls-1" d="M28,55.29A27.29,27.29,0,1,1,55.29,28h0A27.32,27.32,0,0,1,28,55.29Z" data-name="Path 46"
+              id="Path_46"/>
+      </g>
+      <g data-name="Group 54" id="Group_54">
+        <path class="cls-2" d="M23.72,28.13V44a.41.41,0,0,0,.41.41H30a.42.42,0,0,0,.41-.41V27.87h4.26a.41.41,0,0,0,.41-.38l.41-4.84a.42.42,0,0,0-.38-.45h-4.7V18.77a1.46,1.46,0,0,1,1.46-1.46h3.28a.41.41,0,0,0,.41-.41V12.05a.41.41,0,0,0-.41-.41H29.61a5.89,5.89,0,0,0-5.89,5.89h0V22.2H20.79a.42.42,0,0,0-.42.42v4.84a.41.41,0,0,0,.42.41h2.93Z" data-name="Path 47"
+              id="Path_47"/>
+      </g>
+    </g>
+  </g>
+</svg>
