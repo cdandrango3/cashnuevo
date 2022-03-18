@@ -29,6 +29,8 @@ $this->registerCss("");
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                     <a href='<?=Url::to(['cliente/pdfview', 'id' => $model->n_documentos,"ischair"=>true])?>'class="btn btn-default" target="_blank" title="Exportar a pdf" data-toggle="tooltip"> Pdf con asiento</a>
                     <a href='<?=Url::to(['cliente/pdfview', 'id' => $model->n_documentos,"ischair"=>false])?>'class="btn btn-default" target="_blank" title="Exportar a pdf" data-toggle="tooltip"> Pdf sin asiento</a>
+                    <a href='<?=Url::to(['cliente/matrixial', 'id' => $model->n_documentos,"ischair"=>false])?>'class="btn btn-default" target="_blank" title="Exportar a pdf" data-toggle="tooltip"> A matricial</a>
+
                 </div>
 
             </div>

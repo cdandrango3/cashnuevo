@@ -16,6 +16,7 @@ use app\models\ProductType;
 use app\models\Providers;
 use app\models\Salesman;
 use Cassandra\Date;
+use kartik\mpdf\Pdf;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\Json;
@@ -435,6 +436,43 @@ else{
                'salesman'=>$salesman, 'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
 
             ]);
+        }
+        public function actionMatrixial($id,$ischair){
+            $modelhead=New HeadFact;
+            $modelbody=New FacturaBody;
+            $modelfin=New Facturafin;
+            $persona=New Person;
+
+
+            $id=$_GET["id"];
+            $model1=$modelhead::findOne(["n_documentos"=>$id]);
+            $model2=$modelbody::find()->where(["id_head"=>$id])->all();
+            $model3=$modelfin::findOne(["id_head"=>$id]);
+            $persona=$persona::findOne(["id"=>$model1->id_personas]);
+
+            $content = $this->renderPartial('matricial', [
+                'model' => $model1,"model2"=>$model2,"modelfin"=>$model3,"personam"=>$persona
+
+            ]);
+            $pdf = new \kartik\mpdf\Pdf([
+                'mode' => \kartik\mpdf\Pdf::MODE_UTF8, // leaner size using standard fonts
+                'format' => [210,148],
+                'content' => $content,
+                'marginTop' => 20,
+                'marginBottom' => 10,
+                'marginLeft' => 10,
+                'marginRight' => 10,
+                'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+                'cssInline' => '.kv-heading-1{font-size:18px}',
+                'options' => [
+                    'title' => 'Factuur',
+                    'subject' => 'Generating PDF files via yii2-mpdf extension has never been easy',
+                ],
+            ]);
+            return $pdf->render();
+
+
+
         }
 public function actionGetdata($data){
     $model=New Providers;
