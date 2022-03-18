@@ -200,7 +200,11 @@ $sale=Person::findOne(["id"=>$model->id_saleman])
 
     <tr>
         <td>
-            <strong>Subtotal:   </strong> </td> <td> <div class="su"><?=$modelfin->subtotal12?></td>
+            <strong>Subtotal 12 %:   </strong> </td> <td> <div class="su"><?=$modelfin->subtotal12?></td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Subtotal 0%:   </strong> </td> <td> <div class="su"><?=$modelfin->subtotal0?:0 ?> </td>
     </tr>
     <tr>
         <td><strong>Iva: </strong> </td> <td> <div class="su"> <?=$modelfin->iva ?></td></div>

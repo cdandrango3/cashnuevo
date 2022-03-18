@@ -117,7 +117,8 @@ public function actionIndex($tipos){
                 $c = rand(1, 100090000);
                 $this->id=$c;
                 $facturafin->id = $c;
-                $facturafin->subtotal12 = $d["subtotal12"];
+                $facturafin->subtotal12 = $d["subtotal12"]?:0;
+                $facturafin->subtotal0 = $d["subtotal0"]?:0;
                 $facturafin->total = $d["total"];
                 $facturafin->iva = $d["iva"];
                 $facturafin->description = $d["description"];
