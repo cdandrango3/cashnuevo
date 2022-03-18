@@ -44,7 +44,7 @@ class BankdetailsSearch extends BankDetails
     public function search($params)
     {
         $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
-        $query = BankDetails::find()->where(["institution_id"=>$id_ins->id]);
+        $query = BankDetails::find()->innerJoin("chart_accounts","chart_accounts.id=bank_details.chart_account_id")->where(["institution_id"=>$id_ins->id]);
 
         // add conditions that should always apply here
 

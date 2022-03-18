@@ -99,8 +99,8 @@ public function actionIndex($tipos){
         $persona = $person::find()->select("name")->innerJoin("clients","person.id=clients.person_id")->where(["institution_id"=>
             $_SESSION['id_ins']->id])->all();
         $model_tipo=$model_tip::find()->select("name")->all();
-        $pro = $productos::find()->select("name")->all();
-        $precio = $productos::find()->all();
+        $pro = $productos::find()->select("name")->where(['institution_id'=>$_SESSION['id_ins']->id])->all();
+        $precio = $productos::find()->where(['institution_id'=>$_SESSION['id_ins']->id])->all();
         $precioser = $productos::find()->where(['product_type_id'=>2])->all();
         $d= Yii::$app->request->post('Facturafin');
         $per= Yii::$app->request->post('Person');

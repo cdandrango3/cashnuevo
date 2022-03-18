@@ -20,7 +20,7 @@ $accountdata = ArrayHelper::map(\app\models\ChartAccounts::find()
 $accountdataingresos = ArrayHelper::map(\app\models\ChartAccounts::find()
     ->Select(["id,concat(code,' ',slug) as name"])
     ->alias('t')
-    ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->andWhere(['institution_id'=>$id_ins->id])->asArray()->all(),'id', 'name');
+    ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->andWhere(['parent_id'=>13363])->andWhere(['institution_id'=>$id_ins->id])->asArray()->all(),'id', 'name');
 
 Yii::debug($accountdataingresos);
 $listpr=ArrayHelper::map($model2,"name","name");

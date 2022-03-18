@@ -44,7 +44,7 @@ class productSearch extends Product
     public function search($params)
     {
         $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
-        $query = Product::find()->innerJoin("chart_accounts","product.chairaccount_id=chart_accounts.id")->where(["chart_accounts.institution_id"=>$id_ins->id]);
+        $query = Product::find()->where(["institution_id"=>$id_ins->id]);
 
         // add conditions that should always apply here
 
