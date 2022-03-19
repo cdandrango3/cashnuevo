@@ -8,6 +8,7 @@ use app\models\ChargesDetail;
 use app\models\FacturaBody;
 use app\models\Facturafin;
 use app\models\HeadFact;
+use app\models\Institution;
 use app\models\Person;
 use Yii;
 use app\models\BankDetails;
@@ -154,7 +155,8 @@ class BankdetailsController extends Controller
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
     public function actionTransaction(){
-        $model=ChargesDetail::find()->where(["type_transaccion"=>"Transferencia"])->all();
+        $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
+        $model=ChargesDetail::find()->innerJoin("charges","charges_detail.id_charge=charges.id")->innerJoin("person","charges.person_id=person.id")->where(["charges_detail.type_transaccion"=>"Transferencia"])->andWhere(["person.institution_id"=>$id_ins->id])->all();
         $model2=New Charges;
 
         return $this->render('transaccion', [

@@ -16,6 +16,7 @@ use app\models\ProductType;
 use app\models\Providers;
 use app\models\Salesman;
 use Cassandra\Date;
+use kartik\mpdf\Pdf;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\Json;
@@ -30,24 +31,25 @@ class ClienteController extends controller
 {
     public $id;
     public $id_product;
+    public $id_ins=0;
 public function actionIndex($tipos){
     $models=New clients;
     $modelhead=New HeadFact;
     $modelf=New Facturafin;
-    $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
+    $_SESSION['id_ins'] = Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
     if($tipos=="Cliente"){
 
-        $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Cliente"])->andWhere(["institution_id"=>
-        $id_ins->id]);
+        $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->where(["head_fact.tipo_de_documento"=>"Cliente"])->andWhere(["person.institution_id"=>
+            $_SESSION['id_ins']->id]);
     }
     else{
         if ($tipos=="Proveedor") {
-            $query1 = HeadFact::find()->where(["tipo_de_documento"=>"Proveedor"])->andWhere(["institution_id"=>
-                $id_ins->id]);;
+            $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->where(["head_fact.tipo_de_documento"=>"Proveedor"])->andWhere(["person.institution_id"=>
+                $_SESSION['id_ins']->id]);;
         }
         else{
-            $query1 = HeadFact::find()->andWhere(["institution_id"=>
-                $id_ins->id]);
+            $query1 = HeadFact::find()->innerJoin("person","head_fact.id_personas=person.id")->andWhere(["person.institution_id"=>
+                $_SESSION['id_ins']->id]);
         }
 
     }
@@ -95,16 +97,17 @@ public function actionIndex($tipos){
         $facturafin = new Facturafin;
         $accounting_seats=new AccountingSeats;
         $accounting_seats_details=New AccountingSeatsDetails;
-        $persona = $person::find()->select("name")->innerJoin("clients","person.id=clients.person_id")->all();
+        $persona = $person::find()->select("name")->innerJoin("clients","person.id=clients.person_id")->where(["institution_id"=>
+            $_SESSION['id_ins']->id])->all();
         $model_tipo=$model_tip::find()->select("name")->all();
-        $pro = $productos::find()->select("name")->all();
-        $precio = $productos::find()->all();
+        $pro = $productos::find()->select("name")->where(['institution_id'=>$_SESSION['id_ins']->id])->all();
+        $precio = $productos::find()->where(['institution_id'=>$_SESSION['id_ins']->id])->all();
         $precioser = $productos::find()->where(['product_type_id'=>2])->all();
         $d= Yii::$app->request->post('Facturafin');
         $per= Yii::$app->request->post('Person');
-        $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->all();
-        $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->all();
-        $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->all();
+        $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
+        $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
+        $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         if ($model->load(Yii::$app->request->post())) {
             $model->id_personas=$per["id"];
             $model->id_saleman=$per["id_ven"];
@@ -115,7 +118,8 @@ public function actionIndex($tipos){
                 $c = rand(1, 100090000);
                 $this->id=$c;
                 $facturafin->id = $c;
-                $facturafin->subtotal12 = $d["subtotal12"];
+                $facturafin->subtotal12 = $d["subtotal12"]?:0;
+                $facturafin->subtotal0 = $d["subtotal0"]?:0;
                 $facturafin->total = $d["total"];
                 $facturafin->iva = $d["iva"];
                 $facturafin->description = $d["description"];
@@ -131,14 +135,14 @@ public function actionIndex($tipos){
                         $accou_c = $ch1->chart_account_id;
                         $ins = $person::findOne(['id' => $model->id_personas]);
                         $ins = $person::findOne(['id' => $model->id_personas]);
-                        $id_ins = $ins->institution_id;
+
                         $descripcion = $facturafin->description;
                         $nodeductible = False;
                         $status = True;
                         $h = rand(1, 10000000);
                         $accounting_seats->id = $h;
                         $accounting_seats->head_fact = $model->n_documentos;
-                        $accounting_seats->institution_id = $id_ins;
+                        $accounting_seats->institution_id = $_SESSION['id_ins']->id;
                         $accounting_seats->description = $descripcion;
                         $accounting_seats->nodeductible = $nodeductible;
                         $accounting_seats->status = $status;
@@ -229,7 +233,7 @@ public function actionIndex($tipos){
                                 $accounting_sea = new AccountingSeats;
                                 $accounting_sea->head_fact = $model->n_documentos;
                                 $accounting_sea->id = $gr;
-                                $accounting_sea->institution_id = $id_ins;
+                                $accounting_sea->institution_id =$_SESSION['id_ins']->id;
                                 $accounting_sea->description = $descripcion;
                                 $accounting_sea->nodeductible = $nodeductible;
                                 $accounting_sea->status = $status;
@@ -294,14 +298,14 @@ public function actionIndex($tipos){
                             $ch1 = Providers::findOne(['person_id' => $model->id_personas]);
                             $accou_c = $ch1->paid_chart_account_id;
                             $ins = $person::findOne(['id' => $model->id_personas]);
-                            $id_ins = $ins->institution_id;
+
 
                            $descripcion = $facturafin->description;
                            $nodeductible = False;
                             $status = True;
                             $accounting_seats->head_fact = $model->n_documentos;
                             $accounting_seats->id = $h;
-                            $accounting_seats->institution_id = $id_ins;
+                            $accounting_seats->institution_id = $_SESSION['id_ins']->id;
                             $accounting_seats->description = $descripcion;
                             $accounting_seats->nodeductible = $nodeductible;
                             $accounting_seats->status = $status;
@@ -433,13 +437,50 @@ else{
 
             ]);
         }
+        public function actionMatrixial($id,$ischair){
+            $modelhead=New HeadFact;
+            $modelbody=New FacturaBody;
+            $modelfin=New Facturafin;
+            $persona=New Person;
+
+
+            $id=$_GET["id"];
+            $model1=$modelhead::findOne(["n_documentos"=>$id]);
+            $model2=$modelbody::find()->where(["id_head"=>$id])->all();
+            $model3=$modelfin::findOne(["id_head"=>$id]);
+            $persona=$persona::findOne(["id"=>$model1->id_personas]);
+
+            $content = $this->renderPartial('matricial', [
+                'model' => $model1,"model2"=>$model2,"modelfin"=>$model3,"personam"=>$persona
+
+            ]);
+            $pdf = new \kartik\mpdf\Pdf([
+                'mode' => \kartik\mpdf\Pdf::MODE_UTF8, // leaner size using standard fonts
+                'format' => [210,148],
+                'content' => $content,
+                'marginTop' => 20,
+                'marginBottom' => 10,
+                'marginLeft' => 10,
+                'marginRight' => 10,
+                'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+                'cssInline' => '.kv-heading-1{font-size:18px}',
+                'options' => [
+                    'title' => 'Factuur',
+                    'subject' => 'Generating PDF files via yii2-mpdf extension has never been easy',
+                ],
+            ]);
+            return $pdf->render();
+
+
+
+        }
 public function actionGetdata($data){
     $model=New Providers;
     $model2=New Clients;
     $model3=New Person;
 if ($data=="Proveedor"){
     $model2::find()->all();
-    $c=$model3::find()->innerJoin('providers',"person.id=providers.person_id")->all();
+    $c=$model3::find()->innerJoin('providers',"person.id=providers.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
     foreach($c as $co){
         echo "<option value='$co->id'>$co->name</option>";
     }
@@ -447,7 +488,7 @@ if ($data=="Proveedor"){
 else{
     if ($data=="Cliente"){
         $model2::find()->all();
-        $c=$model3::find()->innerJoin('clients',"person.id=clients.person_id")->all();
+        $c=$model3::find()->innerJoin('clients',"person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         foreach($c as $co){
             echo "<option value='$co->id'>$co->name</option>";
         }
@@ -960,7 +1001,7 @@ echo "</td>";
                                 $gr = rand(1, 100090000);
                                 $accounting_sea->head_fact = $model->n_documentos;
                                 $accounting_sea->id = $gr;
-                                $accounting_sea->institution_id = 1;
+                                $accounting_sea->institution_id = $_SESSION['id_ins']->id;
                                 $accounting_sea->description = "inventario";
                                 $accounting_sea->nodeductible = true;
                                 $accounting_sea->type = "inventario";
@@ -1002,7 +1043,7 @@ echo "</td>";
                                 $gr = rand(1, 100090000);
                                 $accounting_sea->head_fact = $model->n_documentos;
                                 $accounting_sea->id = $gr;
-                                $accounting_sea->institution_id = 1;
+                                $accounting_sea->institution_id = $_SESSION['id_ins']->id;
                                 $accounting_sea->description = "fact2";
                                 $accounting_sea->nodeductible = true;
                                 $accounting_sea->status = true;

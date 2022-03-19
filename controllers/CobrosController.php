@@ -10,6 +10,7 @@ use app\models\ChargesDetail;
 use app\models\ChartAccounts;
 use app\models\Facturafin;
 use app\models\HeadFact;
+use app\models\Institution;
 use app\models\Person;
 use DateTime;
 use Yii;
@@ -42,6 +43,7 @@ if($chargem->validate()){
         $li=ChargesDetail::find()->orderBy([
             'date' => SORT_DESC
         ])->where(["id_charge"=>$ac->id])->asArray()->one();
+        Yii::debug($li);
         $saldo_anterior=$li["saldo"];
         if($charges_detail->load(Yii::$app->request->post())) {
             if($charges_detail->amount>$saldo_anterior){
@@ -100,7 +102,6 @@ if($chargem->validate()){
                     $charges_detail->updateAttributes(['saldo' => ($body->total) - ($charges_detail->amount)]);
                 }
 
-
                 $gr = rand(1, 100090000);
                 $charges_detail->updateAttributes(['id_asiento' => $gr]);
                 if ($chargem->type_charge == "Cobro") {
@@ -150,9 +151,11 @@ public function getid(){
     return $id;
 }
 public function asientoscreate($gr,$debe,$haber,$body,$id_head,$description){
+    $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
+
     $accounting_sea=new AccountingSeats;
     $accounting_sea->id= $gr;
-    $accounting_sea->institution_id=1;
+    $accounting_sea->institution_id=$id_ins->id;
     $accounting_sea->description=$description;
     $accounting_sea->head_fact=$id_head;
     $accounting_sea->nodeductible=false;
@@ -181,9 +184,10 @@ public function asientoscreate($gr,$debe,$haber,$body,$id_head,$description){
     }
 }
    public function actionSubcat($data){
+       $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
         if ($data=="Transferencia"){
             $chart_account=\app\models\BankDetails::find()
-                ->all();
+                ->where(['institution_id' =>$id_ins->id])->all();
             foreach($chart_account as $co){
                 echo "<option value='$co->chart_account_id'>$co->name</option>";
             }
@@ -191,7 +195,7 @@ public function asientoscreate($gr,$debe,$haber,$body,$id_head,$description){
         else{
             if ($data=="Caja" || $data=="Cheque" ){
                 $chart_account=\app\models\ChartAccounts::find()
-                    ->where(['parent_id'=>13123])->all();;
+                    ->where(['parent_id'=>13123])->andWhere(['institution_id' =>$id_ins->id])->all();;
                 foreach($chart_account as $co){
                     echo "<option value='$co->id'>$co->code $co->slug</option>";
                 }

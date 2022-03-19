@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Institution;
 use app\models\ProductType;
 use Yii;
 use app\models\Product;
@@ -72,9 +73,10 @@ class ProductController extends Controller
 
             if ($model->load(Yii::$app->request->post())) {
                 $c=$model2::findOne(['name'=>$model2["name"]]);
-                Yii::debug($c);
+                $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
                 $model2::find()->select("name")->all();
                 $model->product_type_id=$c->id;
+                $model->institution_id=$c->id;
                 $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
