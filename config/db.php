@@ -1,5 +1,5 @@
 <?php
-/**/
+/*
 return [
     'class' => 'yii\db\Connection',
     'dsn' => 'pgsql:host=localhost;dbname=cashbook',
@@ -17,9 +17,9 @@ return [
 
 ];
 
-/*
+/*/
 
- /* 
+  
 return [
   return [
   'class' => 'yii\db\Connection',
