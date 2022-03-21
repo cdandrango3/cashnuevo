@@ -7,7 +7,6 @@ $get=$_GET["ischair"];
 
 ?>
 
-
 <table border="0" cellpadding="0" cellspacing="3" style="width:100%;font-family: Arial;font-size:9pt;padding-left: 70px">
 
     <tr>
@@ -140,24 +139,27 @@ $ifex=\app\models\ChargesDetail::find()->where(["id_asiento"=>$modelo->id])->exi
     <?php endforeach?>
 
 <?php endif; ?>
-<table border="0" cellpadding="1" cellspacing="4" style=" text-align: right ; padding:10px;width:100%;font-family: Arial;font-size:9pt">
+<div style = " position:absolute; z-index: 99999; bottom:0; margin:40px">
+    <table style="text-align: right ; width:100%;font-family: Arial;font-size:9pt">
 
-    <tr>
-        <td>
-            <strong> </strong> </td> <td> <div class="su"><?=$modelfin->subtotal12?></td>
-    </tr>
-    <tr>
-        <td>
-            <strong> </strong> </td> <td> <div class="su"><?=$modelfin->subtotal0?:0 ?> </td>
-    </tr>
-    <tr>
-        <td><strong></strong> </td> <td> <div class="su"> <?=$modelfin->iva ?></td></div>
-    </tr>
-    <?php if(is_null($modelfin->descuento)):?>
-        <tr> <td> <strong></strong> </td> <div class="su">  <td><?= 0 ?></td></div></tr>
-    <?php else:?>
-        <tr> <td> <strong> </strong> </td> <div class="su">  <td><?=$modelfin->descuento ?></td></div></tr>
-    <?php endif?>
-    <tr> <td> <strong> </strong> </td> <td><div class="su"><?=$modelfin->total ?></td></div></tr>
-</table>
+        <tr>
+            <td class="fin">
+                 <?=$modelfin->subtotal12?> </td>
+            </tr>
+        <tr>
+            <td class="fin">
+                <?=$modelfin->subtotal0?:0?> </td>
+        </tr>
+        <tr>
+            <td class="fin">
+                <?=$modelfin->iva?> </td>
+        </tr>
+        <tr>
+            <td class="fin">
+                <?=$modelfin->total?>
+            </td>
+        </tr>
+    </table>
+
+</div>
 

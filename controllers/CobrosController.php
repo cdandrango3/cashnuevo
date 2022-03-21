@@ -187,7 +187,7 @@ public function asientoscreate($gr,$debe,$haber,$body,$id_head,$description){
        $id_ins=Institution::findOne(['users_id'=>Yii::$app->user->identity->id]);
         if ($data=="Transferencia"){
             $chart_account=\app\models\BankDetails::find()
-                ->where(['institution_id' =>$id_ins->id])->all();
+                ->innerJoin("chart_accounts","bank_details.chart_account_id=chart_accounts.id")->where(['chart_accounts.institution_id' =>$id_ins->id])->all();
             foreach($chart_account as $co){
                 echo "<option value='$co->chart_account_id'>$co->name</option>";
             }

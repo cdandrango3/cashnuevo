@@ -106,6 +106,7 @@ public function actionIndex($tipos){
         $d= Yii::$app->request->post('Facturafin');
         $per= Yii::$app->request->post('Person');
         $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
+        Yii::debug($query);
         $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         if ($model->load(Yii::$app->request->post())) {
@@ -432,10 +433,13 @@ else{
 
 
 
+        if ($persona && $salesman) {
             return $this->render('factura', [
-               'salesman'=>$salesman, 'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio,"query"=>$query, 'model3' => $facturafin,'modeltype'=>$model_tipo,'produ'=>$productos,"providers"=>$providers
+                'salesman' => $salesman, 'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio, "query" => $query, 'model3' => $facturafin, 'modeltype' => $model_tipo, 'produ' => $productos, "providers" => $providers
 
             ]);
+        }
+        return $this->renderContent("<h1>No se ha encontrado clientes o vendedores para la facturacion</h1>");
         }
         public function actionMatrixial($id,$ischair){
             $modelhead=New HeadFact;
@@ -454,6 +458,11 @@ else{
                 'model' => $model1,"model2"=>$model2,"modelfin"=>$model3,"personam"=>$persona
 
             ]);
+            $css='
+            .fin{
+           padding:5px;
+            }
+            ';
             $pdf = new \kartik\mpdf\Pdf([
                 'mode' => \kartik\mpdf\Pdf::MODE_UTF8, // leaner size using standard fonts
                 'format' => [210,148],
@@ -463,7 +472,7 @@ else{
                 'marginLeft' => 10,
                 'marginRight' => 10,
                 'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
-                'cssInline' => '.kv-heading-1{font-size:18px}',
+                'cssInline' => $css,
                 'options' => [
                     'title' => 'Factuur',
                     'subject' => 'Generating PDF files via yii2-mpdf extension has never been easy',
