@@ -176,6 +176,7 @@ class BankdetailsController extends Controller
         $persona=New Person;
         $id=$_GET["com"];
         $modelo= ChargesDetail::findOne(["comprobante"=>$id]);
+        Yii::debug($modelo);
         $modelo2=Charges::findOne(["id"=>$modelo->id_charge]);
         yii::debug($modelo->id_asiento);
         $accounting_sea=AccountingSeats::findOne([["id"=>$modelo->id_asiento]]);

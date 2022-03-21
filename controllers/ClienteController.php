@@ -497,7 +497,7 @@ if ($data=="Proveedor"){
 else{
     if ($data=="Cliente"){
         $model2::find()->all();
-        $c=$model3::find()->innerJoin('clients',"person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
+        $c=$model3::find()->innerJoin('clients',"person.id=clients.id_personas")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         foreach($c as $co){
             echo "<option value='$co->id'>$co->name</option>";
         }
@@ -508,7 +508,7 @@ else{
     {
 
 
-        $model2 = HeadFact::find()->andFilterWhere(['like', 'n_documentos', $fil . '%', false])->andFilterWhere(['id_personas' => $per])->andFilterWhere(['tipo_de_documento' => $tipo])->all();
+        $model2 = HeadFact::find()->innerjoin("person","person.id=head_fact.id_personas")->andFilterWhere(['like', 'head_fact.n_documentos', $fil . '%', false])->andFilterWhere(['head_fact.id_personas' => $per])->andFilterWhere(['head_fact.tipo_de_documento' => $tipo])->andFilterWhere(['person.institution_id' =>  $_SESSION['id_ins']->id])->all();
         yii::debug($model2);
 
 

@@ -17,7 +17,6 @@ use Yii;
  * @property string|null $tipo_de_documento
  * @property int|null $id_saleman
  * @property int $id
- * @property Institution $institution
  * @property Person $personas
  * @property Person $saleman
  */
@@ -39,8 +38,8 @@ class HeadFact extends \yii\db\ActiveRecord
         return [
             [['f_timestamp'], 'required'],
             [['n_documentos', 'id_personas','referencia','autorizacion'], 'required'],
-            [['id_personas', 'id_saleman','institution_id'], 'default', 'value' => null],
-            [['id_personas', 'id_saleman','institution_id'], 'integer'],
+            [['id_personas', 'id_saleman'], 'default', 'value' => null],
+            [['id_personas', 'id_saleman'], 'integer'],
             [['Entregado'], 'boolean'],
             [['n_documentos', 'referencia', 'orden_cv', 'autorizacion', 'tipo_de_documento'], 'string', 'max' => 50],
             [['n_documentos'], 'unique'],
@@ -64,8 +63,7 @@ class HeadFact extends \yii\db\ActiveRecord
             'autorizacion' => 'Autorización',
             'tipo_de_documento' => 'Tipo De Documento',
             'id_saleman' => 'Id Saleman',
-            'id' => 'ID',
-            'institution_id' => 'Institution ID',
+            'id' => 'ID'
         ];
     }
 
