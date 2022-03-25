@@ -18,7 +18,8 @@ $listData=ArrayHelper::map($ven,"id","name");
 $listProduct=ArrayHelper::map($produc,"name","name");
 $listPrecio=ArrayHelper::map($precio,"name","precio");
 $listIva=ArrayHelper::map($precio,"name","product_iva_id");
-$reteiva=\yii\helpers\Json::encode(ArrayHelper::map($retiva,"id_charge","percentaje"));
+$reteiva=\yii\helpers\Json::encode(ArrayHelper::map($retiva,"concat","percentage"));
+$reteimp=\yii\helpers\Json::encode(ArrayHelper::map($retimp,"concat","percentage"));
 $listcosto=ArrayHelper::map($precio,"name","costo");
 $sales=ArrayHelper::map($salesman,"id","name");
 $listtypepro=ArrayHelper::map($modeltype,"name","name");
@@ -235,8 +236,10 @@ $(añadir).click(function(){
 count=count+1
 
       pro='<?php echo $prolist ?>'
-
-
+    reteiva= '<?php echo $reteiva?>'
+    reteimp= '<?php echo $reteimp?>'
+   var reiva=JSON.parse(reteiva)
+console.log(reiva)
     dapro=JSON.parse(pro)
      var c='<tr id="int'+count+'">'
          c+='<td>'
@@ -252,7 +255,10 @@ count=count+1
     c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
     c+='</td>'
     c+='<td>'
-    c+= '<select class="m-5 js-example-basic-single" name="state"><option value="AL">Alabama</option> <option value="WY">Wyoming</option></select>'
+    c+= '<div class="form-group field-idn"><select class="js-example-basic-single m-5" name="state"><option value="">Select...</option>'
+    for(i in reiva){
+        c+='<option class="s" value="'+reiva[i]+'">"'+i+'"</option>'
+    }
     c+='</td>'
     c+='<td>'
     c+='<div class="form-group field-desc"><label class="control-label" for="facturabody-+count+-desc"></label><input type="text" id="desc'+count+'" class="form-control desc" name="FacturaBody['+count+'][desc]" value="">'
@@ -352,10 +358,11 @@ $(document).on('keyup','.preu',function(){
         $('#total').val(total)
     })
     $('#nuevo').append(c);
-    $('.js-example-basic-single').select2();
+    $('.js-example-basic-single').select2({width: '100%'});
 
     $('.js-example-basic-single').on('change', function() {
         var data = $(".js-example-basic-single option:selected").val();
+        console.log(data)
     })
 })
     $('body').on('beforeSubmit', 'form#dynamic-form111', function () {
