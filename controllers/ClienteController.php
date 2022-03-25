@@ -14,6 +14,7 @@ use app\models\HeadFact;
 use app\models\Product;
 use app\models\ProductType;
 use app\models\Providers;
+use app\models\Retention;
 use app\models\Salesman;
 use Cassandra\Date;
 use kartik\mpdf\Pdf;
@@ -105,8 +106,10 @@ public function actionIndex($tipos){
         $precioser = $productos::find()->where(['product_type_id'=>2])->all();
         $d= Yii::$app->request->post('Facturafin');
         $per= Yii::$app->request->post('Person');
+        $retimp=Retention::find()->select(['concat(c.code,c.slug)','retention.percentage'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["retention.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13171])->asArray()->all();
+        yii::debug($retimp);
+        $retiva=Retention::find()->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["retention.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13163])->asArray()->all();
         $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
-        Yii::debug($query);
         $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         if ($model->load(Yii::$app->request->post())) {
@@ -435,7 +438,7 @@ else{
 
         if ($persona && $salesman) {
             return $this->render('factura', [
-                'salesman' => $salesman, 'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio, "query" => $query, 'model3' => $facturafin, 'modeltype' => $model_tipo, 'produ' => $productos, "providers" => $providers
+                'retiva' => $retiva, 'retimp' => $retimp, 'salesman' => $salesman, 'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio, "query" => $query, 'model3' => $facturafin, 'modeltype' => $model_tipo, 'produ' => $productos, "providers" => $providers
 
             ]);
         }
@@ -467,7 +470,7 @@ else{
                 'mode' => \kartik\mpdf\Pdf::MODE_UTF8, // leaner size using standard fonts
                 'format' => [210,148],
                 'content' => $content,
-                'marginTop' => 20,
+                'marginTop' => 25,
                 'marginBottom' => 10,
                 'marginLeft' => 10,
                 'marginRight' => 10,

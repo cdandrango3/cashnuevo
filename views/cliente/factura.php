@@ -18,7 +18,7 @@ $listData=ArrayHelper::map($ven,"id","name");
 $listProduct=ArrayHelper::map($produc,"name","name");
 $listPrecio=ArrayHelper::map($precio,"name","precio");
 $listIva=ArrayHelper::map($precio,"name","product_iva_id");
-yii::debug($listIva);
+$reteiva=\yii\helpers\Json::encode(ArrayHelper::map($retiva,"id_charge","percentaje"));
 $listcosto=ArrayHelper::map($precio,"name","costo");
 $sales=ArrayHelper::map($salesman,"id","name");
 $listtypepro=ArrayHelper::map($modeltype,"name","name");
@@ -31,10 +31,15 @@ $authItemChild = Yii::$app->request->post('Person');
 $auth = Yii::$app->request->post('HeadFact');
 $request=Yii::$app->request->post('FacturaBody');
 $model->f_timestamp=date("Y-m-d")
-?>
 
+?>
+<?=
+$this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [
+    'depends' => [\yii\web\JqueryAsset::className()]
+])?>
 <div class="cliente-factura">
     <?php
+
     if(Yii::$app->session->hasFlash("error")){
         $c=Yii::$app->session->getFlash('error');
         foreach ($c as  $message) {
@@ -105,6 +110,7 @@ $model->f_timestamp=date("Y-m-d")
     <th>Cantidad</th>
     <th> Producto </th>
     <th> Valor unitario </th>
+    <th> Ret.IVA </th>
     <th> Descuento %</th>
     <th> Valor final </th>
     <th> Eliminar </th>
@@ -160,10 +166,8 @@ $model=$models::find()->select("ruc")->all();
 echo $this->renderAjax("formclientrender",compact('model'));
 
 Modal::end();
-
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-
-
 
 <script type="text/javascript">
     var count=0;
@@ -172,11 +176,11 @@ Modal::end();
     $(document).ready(function(){
         $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
     })
+
     $('#buscar').click(function() {
         $('#modal').modal('show')
             .find('#modalContent')
     })
-
     $('#ndocu')
         .keypress(function (event) {
             if (event.which < 48 || event.which > 57 || this.value.length === 17) {
@@ -243,10 +247,12 @@ count=count+1
         for(i in dapro){
          c+='<option class="s" value="'+i+'">"'+i+'"</option>'
         }
-    c+='</select></div>'
     c+='</td>'
     c+='<td>'
     c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
+    c+='</td>'
+    c+='<td>'
+    c+= '<select class="m-5 js-example-basic-single" name="state"><option value="AL">Alabama</option> <option value="WY">Wyoming</option></select>'
     c+='</td>'
     c+='<td>'
     c+='<div class="form-group field-desc"><label class="control-label" for="facturabody-+count+-desc"></label><input type="text" id="desc'+count+'" class="form-control desc" name="FacturaBody['+count+'][desc]" value="">'
@@ -258,7 +264,6 @@ count=count+1
     c+='<button class="btn btn-danger mdwsdsdsft-3 remove" id="'+count+'">Eliminar</button>'
     c+='</td>'
     c+='</tr>'
-
     $('#hola').click(function(){
 
     });
@@ -346,8 +351,12 @@ $(document).on('keyup','.preu',function(){
         $('#des').val(iva)
         $('#total').val(total)
     })
-
     $('#nuevo').append(c);
+    $('.js-example-basic-single').select2();
+
+    $('.js-example-basic-single').on('change', function() {
+        var data = $(".js-example-basic-single option:selected").val();
+    })
 })
     $('body').on('beforeSubmit', 'form#dynamic-form111', function () {
         var form = $(this);
