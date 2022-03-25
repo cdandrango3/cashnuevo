@@ -38,6 +38,10 @@ $model->f_timestamp=date("Y-m-d")
 $this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [
     'depends' => [\yii\web\JqueryAsset::className()]
 ])?>
+<?=
+$this->registerCssFile('https://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css', [
+    'depends' => [\yii\web\JqueryAsset::className()]
+])?>
 <div class="cliente-factura">
     <?php
 
@@ -105,20 +109,26 @@ $this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css
         </div>
     </div>
 </div>
-<?php echo HTML::tag("a", "añadir detalle", ["value" => "ff", "id" => "añadir", "class" => "btn btn-primary text-white float-right mr-4"]); ?>
+<div id="tabs">
+
+    <ul>
+        <li><a href="#tabs-1">Factura</a></li>
+        <li><a href="#tabs-2">Retension</a></li>
+    </ul>
+    <div id="tabs-1">
+        <?php echo HTML::tag("a", "añadir detalle", ["value" => "ff", "id" => "añadir", "class" => "btn btn-primary text-white float-right mr-4"]); ?>
 <table class="table table-dark">
     <thead>
     <th>Cantidad</th>
     <th> Producto </th>
     <th> Valor unitario </th>
+    <th> Ret.IMP </th>
     <th> Ret.IVA </th>
     <th> Descuento %</th>
     <th> Valor final </th>
     <th> Eliminar </th>
     </thead>
     <tbody id="nuevo">
-
-
     </tbody>
 </table>
 <div class="row">
@@ -134,6 +144,19 @@ $this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css
         <td><?= $form->field($model3, 'total')->label("total")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"total"]) ?></td>
     </div>
 </div>
+    </div>
+    <div id="tabs-2">
+        <table class="table table-dark">
+        <thead>
+        <th>Cantidad</th>
+        <th> Producto </th>
+        <th> Valor unitario </th>
+        <th> Ret.IMP </th>
+        <th> Ret.IVA </th>
+        </thead>
+        </table>
+    </div>
+    </div>
 <?= Html::submitButton('Guardar', ['class' => 'btn btn-success float-right ','id'=>"buttonsubmit"]) ?>
 <br>
 <br>
@@ -168,14 +191,17 @@ echo $this->renderAjax("formclientrender",compact('model'));
 
 Modal::end();
 $this->registerJsFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://code.jquery.com/ui/1.11.3/jquery-ui.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-
+</div>
+</div>
 <script type="text/javascript">
     var count=0;
     cov=[]
 
     $(document).ready(function(){
         $('#personm').append('<a id="buscar" class="btn btn-primary">buscar</a>')
+        $( "#tabs" ).tabs();
     })
 
     $('#buscar').click(function() {
@@ -238,6 +264,7 @@ count=count+1
       pro='<?php echo $prolist ?>'
     reteiva= '<?php echo $reteiva?>'
     reteimp= '<?php echo $reteimp?>'
+    var reimp=JSON.parse(reteimp)
    var reiva=JSON.parse(reteiva)
 console.log(reiva)
     dapro=JSON.parse(pro)
@@ -255,7 +282,13 @@ console.log(reiva)
     c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
     c+='</td>'
     c+='<td>'
-    c+= '<div class="form-group field-idn"><select class="js-example-basic-single m-5" name="state"><option value="">Select...</option>'
+    c+= '<div class="form-group field-idn"><select id="retimp'+count+'" class="js-example-basic-single m-5" name="state"><option value="">Select...</option>'
+    for(i in reimp){
+        c+='<option class="s" value="'+reimp[i]+'">"'+i+'"</option>'
+    }
+    c+='</td>'
+    c+='<td>'
+    c+= '<div class="form-group field-idn"><select id="retiva'+count+'" class="js-example-basic-single m-5" name="state"><option value="">Select...</option>'
     for(i in reiva){
         c+='<option class="s" value="'+reiva[i]+'">"'+i+'"</option>'
     }

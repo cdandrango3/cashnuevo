@@ -54,8 +54,6 @@ public function actionIndex($tipos){
         }
 
     }
-
-    Yii::debug($query1);
     $pages = new Pagination(['defaultPageSize' => 5,'totalCount' => $query1->count()]);
     $modelhe = $query1->offset($pages->offset)
         ->limit($pages->limit)
@@ -106,8 +104,8 @@ public function actionIndex($tipos){
         $precioser = $productos::find()->where(['product_type_id'=>2])->all();
         $d= Yii::$app->request->post('Facturafin');
         $per= Yii::$app->request->post('Person');
-        $retimp=Retention::find()->select(['concat(c.code,c.slug)','retention.percentage'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["retention.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13252])->asArray()->all();
-        $retiva=Retention::find()->select(['concat(c.code,c.slug)','retention.percentage'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["retention.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13264])->asArray()->all();
+        $retimp=Retention::find()->select(["(concat(c.code,' ',c.slug))",'retention.percentage'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["c.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13252])->asArray()->all();
+        $retiva=Retention::find()->select(["concat(c.code,'  ',c.slug)",'retention.percentage'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["c.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13264])->asArray()->all();
         $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
@@ -161,17 +159,14 @@ public function actionIndex($tipos){
                                 $sum=$sum+($bod->precio_total);
                                 if (!(is_null($cos->charingresos))) {
                                     $haber[] = $cos->charingresos;
-                                    yii::debug($haber);
                                     $suma[] = $bod->precio_total;
-                                    yii::debug($suma);
                                 }
-                                     yii::debug($haber);
+
                             }
 
 
                             Yii::debug(count($haber));
                             if(count($haber) !=0 ){
-                                Yii::debug("estoy aqui");
                                 $debea=$accou_c;
                                 $haber[]=13273;
                                 $i=count($haber);
@@ -301,8 +296,6 @@ public function actionIndex($tipos){
                             $ch1 = Providers::findOne(['person_id' => $model->id_personas]);
                             $accou_c = $ch1->paid_chart_account_id;
                             $ins = $person::findOne(['id' => $model->id_personas]);
-
-
                            $descripcion = $facturafin->description;
                            $nodeductible = False;
                             $status = True;
@@ -330,7 +323,6 @@ public function actionIndex($tipos){
                                         }
                                 }
                                     $suma[]=$bod->precio_total;
-                                    yii::debug($suma);
                                 }
 
                                 $debea[]= 13161;
@@ -959,7 +951,8 @@ echo "</td>";
                                     $accounting_seats_details->cost_center_id = 1;
                                     $accounting_seats_details->status = true;
                                     $accounting_seats_details->save();
-                                } else {
+                                }
+                                else {
                                     $accounting_seats_details = new AccountingSeatsDetails;
                                     $accounting_seats_details->accounting_seat_id = $f;
                                     $accounting_seats_details->chart_account_id = $haber[$k - 1];

@@ -9,8 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property int|null $id_chart
- * @property int $percentage
- * @property int|null $institution_id
+ * @property int|null $percentage
  */
 class Retention extends \yii\db\ActiveRecord
 {
@@ -28,8 +27,8 @@ class Retention extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_chart', 'percentage', 'institution_id'], 'default', 'value' => null],
-            [['id_chart', 'percentage', 'institution_id'], 'integer'],
+            [['id_chart', 'percentage'], 'default', 'value' => null],
+            [['id_chart', 'percentage'], 'integer'],
         ];
     }
 
@@ -42,7 +41,6 @@ class Retention extends \yii\db\ActiveRecord
             'id' => 'ID',
             'id_chart' => 'Id Chart',
             'percentage' => 'Percentage',
-            'institution_id' => 'Institution ID',
         ];
     }
 }
