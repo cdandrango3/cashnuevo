@@ -104,8 +104,8 @@ public function actionIndex($tipos){
         $precioser = $productos::find()->where(['product_type_id'=>2])->all();
         $d= Yii::$app->request->post('Facturafin');
         $per= Yii::$app->request->post('Person');
-        $retimp=Retention::find()->select(["(concat(c.code,' ',c.slug))",'retention.percentage'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["c.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13252])->asArray()->all();
-        $retiva=Retention::find()->select(["concat(c.code,'  ',c.slug)",'retention.percentage'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["c.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13264])->asArray()->all();
+        $retimp=Retention::find()->select(["(concat(c.code,' ',c.slug))",'retention.id'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["c.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13252])->asArray()->all();
+        $retiva=Retention::find()->select(["concat(c.code,'  ',c.slug)",'retention.id'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["c.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13264])->asArray()->all();
         $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
@@ -477,6 +477,7 @@ else{
 
 
         }
+
 public function actionGetdata($data){
     $model=New Providers;
     $model2=New Clients;
@@ -498,6 +499,14 @@ else{
     }
 }
 }
+    public function actionGetretention()
+    {
+        if(Yii::$app->request->isAjax){
+            $data=Yii::$app->request->post();
+            $datos=Retention::findOne([$data["single"]]);
+            return(\yii\helpers\Json::encode($datos));
+        }
+    }
     public function actionBuscarf($fil,$per,$tipo)
     {
 

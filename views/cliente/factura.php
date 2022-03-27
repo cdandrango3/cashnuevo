@@ -18,8 +18,8 @@ $listData=ArrayHelper::map($ven,"id","name");
 $listProduct=ArrayHelper::map($produc,"name","name");
 $listPrecio=ArrayHelper::map($precio,"name","precio");
 $listIva=ArrayHelper::map($precio,"name","product_iva_id");
-$reteiva=\yii\helpers\Json::encode(ArrayHelper::map($retiva,"concat","percentage"));
-$reteimp=\yii\helpers\Json::encode(ArrayHelper::map($retimp,"concat","percentage"));
+$reteiva=\yii\helpers\Json::encode(ArrayHelper::map($retiva,"concat","id"));
+$reteimp=\yii\helpers\Json::encode(ArrayHelper::map($retimp,"concat","id"));
 $listcosto=ArrayHelper::map($precio,"name","costo");
 $sales=ArrayHelper::map($salesman,"id","name");
 $listtypepro=ArrayHelper::map($modeltype,"name","name");
@@ -131,6 +131,23 @@ $this->registerCssFile('https://code.jquery.com/ui/1.11.2/themes/smoothness/jque
     <tbody id="nuevo">
     </tbody>
 </table>
+    </div>
+    <div id="tabs-2">
+        <table class="table table-dark">
+            <thead>
+            <th>Retencion</th>
+            <th>Tipo</th>
+            <th>Codigo sri</th>
+            <th>Base</th>
+            <th>%</th>
+            <th>Valor</th>
+            </thead>
+            <tbody id="ret">
+            </tbody>
+        </table>
+    </div>
+</div>
+<br><br><br><br><br>
 <div class="row">
     <div class="col-7">
         <td><?= $form->field($model3, 'description')->label("Descripcion")->textarea(['rows' => '6'])?></td>
@@ -144,19 +161,6 @@ $this->registerCssFile('https://code.jquery.com/ui/1.11.2/themes/smoothness/jque
         <td><?= $form->field($model3, 'total')->label("total")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"total"]) ?></td>
     </div>
 </div>
-    </div>
-    <div id="tabs-2">
-        <table class="table table-dark">
-        <thead>
-        <th>Cantidad</th>
-        <th> Producto </th>
-        <th> Valor unitario </th>
-        <th> Ret.IMP </th>
-        <th> Ret.IVA </th>
-        </thead>
-        </table>
-    </div>
-    </div>
 <?= Html::submitButton('Guardar', ['class' => 'btn btn-success float-right ','id'=>"buttonsubmit"]) ?>
 <br>
 <br>
@@ -282,13 +286,13 @@ console.log(reiva)
     c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
     c+='</td>'
     c+='<td>'
-    c+= '<div class="form-group field-idn"><select id="retimp'+count+'" class="js-example-basic-single m-5" name="state"><option value="">Select...</option>'
+    c+= '<div class="form-group field-idn"><select id="retimp-'+count+'" class="js-example-basic-single m-5" name="state"><option value="">Select...</option>'
     for(i in reimp){
         c+='<option class="s" value="'+reimp[i]+'">"'+i+'"</option>'
     }
     c+='</td>'
     c+='<td>'
-    c+= '<div class="form-group field-idn"><select id="retiva'+count+'" class="js-example-basic-single m-5" name="state"><option value="">Select...</option>'
+    c+= '<div class="form-group field-idn"><select id="retiva-'+count+'" class="js-retiva m-5" name="state"><option value="">Select...</option>'
     for(i in reiva){
         c+='<option class="s" value="'+reiva[i]+'">"'+i+'"</option>'
     }
@@ -327,8 +331,6 @@ $(document).on('keyup','.preu',function(){
         item.push($(this).val())
     })
     $('.g').each(function(){
-
-        console.log(c)
         if(iva[item[c]]==12){
             sumiv=sumiv+parseFloat($(this).val());
         }
@@ -339,23 +341,17 @@ $(document).on('keyup','.preu',function(){
     })
     $('#sub0').val(round(sumn))
     $('#sub').val(round(sumiv))
-
-    console.log(sumn);
-    console.log(sumiv);
     iva=sumiv*0.12;
     des=0;
     total=sumiv+sumn+iva+des;
     $('#iva').val(round(iva))
     $('#des').val(round(iva))
     $('#total').val(round(total))
-    console.log(h)
 
 })
 
     $(document).on('click','.remove',function(){
         id=$(this).attr("id");
-
-
         $("#int"+id).remove();
         sum=0;
         c=0;
@@ -366,10 +362,7 @@ $(document).on('keyup','.preu',function(){
         $('.la').each(function(){
             item.push($(this).val())
         })
-        console.log(item[0]);
         $('.g').each(function(){
-
-            console.log(c)
             if(iva[item[c]]==12){
                 sumiv=sumiv+parseFloat($(this).val());
             }
@@ -380,9 +373,6 @@ $(document).on('keyup','.preu',function(){
         })
         $('#sub0').val(sumn)
         $('#sub').val(sumiv)
-
-        console.log(sumn);
-        console.log(sumiv);
         iva=sumiv*0.12;
         des=0;
         total=sumiv+sumn+iva+des;
@@ -392,41 +382,71 @@ $(document).on('keyup','.preu',function(){
     })
     $('#nuevo').append(c);
     $('.js-example-basic-single').select2({width: '100%'});
+    $('.js-retiva').select2({width: '100%'});
 
     $('.js-example-basic-single').on('change', function() {
-        var data = $(".js-example-basic-single option:selected").val();
-        console.log(data)
+        datas= $(this).attr('id').split('-')[1];
+        console.log(datas)
+        single= $(this).val();
+        $.ajax({
+            method: "POST",
+            data: {single:single},
+            url: '<?php echo Yii::$app->request->baseUrl. '/cliente/getretention'?>',
+            success: function (data) {
+                slug=JSON.parse(data)
+                console.log(slug)
+                var tab='<tr id="ret-'+datas+'" class="tr1">'
+                tab+='<td id="tipo-'+datas+'">'
+                tab+= slug.id|| "no existe"
+                tab+='</td>'
+                tab+='<td id="sri-'+datas+'">'
+                tab+='Impuesto a la renta'
+                tab+='</td>'
+                tab+='<td id="tipo-'+datas+'">'
+                tab+='</td>'
+                tab+='<td id="base-'+datas+'">'
+                tab+= `<input type="text" value=${($("#valtotal"+datas).val())|| 0} readonly />`
+                tab+='</td>'
+                tab+='<td id="%-'+datas+'">'
+                tab+= `<input type="text" value=${slug.percentage|| 0} readonly />`
+                tab+='</td>'
+                tab+='<td id="valor-'+datas+'">'
+                tab+= `<input type="text" value=${($("#valtotal"+datas).val()*parseFloat(slug.percentage))/100 || 0} readonly />`
+                tab+='</td>'
+                tab+='</td>'
+                tab+='</tr>'
+                if ($("#ret-"+datas).length > 0) {
+                    $("#ret-"+datas).remove();
+                    $("#ret").append(tab)
+                }
+                else{
+                    $("#ret").append(tab)
+                }
+
+            },
+            error: function (err) {
+
+                //do something else
+                console.log(err);
+                if(err){
+                    alert('It works!');
+                }
+
+            }
+
+        })
+    })
+    $('.js-retiva').on('change', function() {
+        var data = $(this).attr('id');
+        $.ajax({
+
+        })
+
     })
 })
-    $('body').on('beforeSubmit', 'form#dynamic-form111', function () {
-        var form = $(this);
-        // return false if form still have some validation errors
-        if (form.find('.has-error').length)
-        {
-            return false;
-        }
-        // submit form
-        $.ajax({
-            url    : form.attr('action'),
-            type   : 'get',
-            data   : form.serialize(),
-            success: function (response)
-            {
-                var getupdatedata = $(response).find('#filter_id_test');
-                // $.pjax.reload('#note_update_id'); for pjax update
-                $('#yiiikap').html(getupdatedata);
-                //console.log(getupdatedata);
-            },
-            error  : function ()
-            {
-                console.log('internal server error');
-            }
-        });
-        return false;
-    });
+
 function calcular(){
     tip= $('#tipodocu').val();
-    console.log(tip)
     if(tip=="Cliente"){
         f=JSON.parse('<?php echo $prelist?>');
 
@@ -439,22 +459,18 @@ function calcular(){
     }
 
     cost=JSON.parse('<?php echo $lcosto?>');
-    console.log(cost);
     $('#idn'+h+'').val(f[d]);
     co=cost[d]
     cost=$('#can'+h).val()*co
     suma=0;
     cov.push(cost);
-    console.log(cov)
     for (const element of cov){
         suma=suma+parseFloat(element)
         cost=JSON.parse('<?php echo $lcosto?>');
     }
-    console.log(suma)
     $('#pre').val(suma)
     re=($('#can'+h).val())*($('#idn'+h).val())
     $('#valtotal'+h).val(re);
-    console.log(cost)
     sum=0;
     c=0;
     sumiv=0;
@@ -464,10 +480,8 @@ function calcular(){
     $('.la').each(function(){
         item.push($(this).val())
     })
-    console.log(item[0]);
-    $('.g').each(function(){
 
-        console.log(c)
+    $('.g').each(function(){
         if(iva[item[c]]==12){
             sumiv=sumiv+parseFloat($(this).val());
         }
@@ -478,8 +492,6 @@ function calcular(){
     })
     $('#sub0').val(round(sumn))
     $('#sub').val(round(sumiv))
-    console.log(round(sumn));
-    console.log(round(sumiv));
     iva=sumiv*0.12;
     des=0;
     total=sumiv+sumn+iva+des;
@@ -508,8 +520,6 @@ function calcular(){
             item.push($(this).val())
         })
         $('.g').each(function(){
-
-            console.log(c)
             if(iva[item[c]]==12){
                 sumiv=sumiv+parseFloat($(this).val());
             }
@@ -520,21 +530,16 @@ function calcular(){
         })
         $('#sub0').val(round(sumn))
         $('#sub').val(round(sumiv))
-
-        console.log(sumn);
-        console.log(sumiv);
         iva=sumiv*0.12;
         des=0;
         total=sumiv+sumn+iva+des;
         $('#iva').val(round(iva))
         $('#des').val(round(iva))
         $('#total').val(round(total))
-        console.log(h)
     })
     $(document).on('keyup','.desc',function(){
         te=$(this).attr("id");
         h=te.substring(4);
-        console.log(h);
 
         preciou=$('#idn'+h+'').val();
         cant=$('#can'+h).val();
@@ -544,14 +549,12 @@ function calcular(){
         val=$('#valtotal'+h).val();
         valf=val-desc;
         $('#valtotal'+h).val(valf);
-
         sum=0;
 
         $('.g').each(function(){
             sum=sum+parseFloat($(this).val());
-
-
         })
+
         $('')
         $('#sub').val(sum)
         iva=sum*0.12;
@@ -560,11 +563,12 @@ function calcular(){
         $('#iva').val(round(iva))
         $('#desc').val(round(desc))
         $('#total').val(round(total))
-        console.log(val);
+
     })
     $('#añadir')
 $('#buttonsubmit').click(function(){
-cantidad=[];
+    var f=false;
+    cantidad=[];
     preciou=[];
     pro=[];
     preciot=[];
@@ -582,7 +586,7 @@ cantidad=[];
     preciot.push($(this).val())
     })
     n_docu= $('#ndocu').val();
-
+    if (cantidad.length > 0){
     $.ajax({
         method: "POST",
         data: { cantidad:cantidad,produc:pro,preciou:preciou,precioto:preciot,ndocumento:n_docu },
@@ -600,7 +604,10 @@ cantidad=[];
 
         }
 
-    })
+    })}
+    else{
+        return false
+    }
 
 })
     function round(num) {
