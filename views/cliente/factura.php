@@ -395,6 +395,11 @@ $(document).on('keyup','.preu',function(){
         $("#int"+id).remove();
         if ($("#ret-"+id).length > 0) {
             $("#ret-"+id).remove();
+
+        }
+        if ($("#reti-"+id).length > 0) {
+            $("#reti-"+id).remove();
+
         }
 
         sum=0;
