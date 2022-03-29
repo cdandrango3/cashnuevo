@@ -15,6 +15,7 @@ use app\models\Product;
 use app\models\ProductType;
 use app\models\Providers;
 use app\models\Retention;
+use app\models\Retentiondetail;
 use app\models\Salesman;
 use Cassandra\Date;
 use kartik\mpdf\Pdf;
@@ -88,6 +89,7 @@ public function actionIndex($tipos){
         $model = new HeadFact;
         $person = new Person;
         $client=New Clients;
+        $retention = new Retentiondetail;
         $institucion=New Institution;
         $model_tip=New ProductType;
         $salesman = new Salesman;
@@ -104,8 +106,10 @@ public function actionIndex($tipos){
         $precioser = $productos::find()->where(['product_type_id'=>2])->all();
         $d= Yii::$app->request->post('Facturafin');
         $per= Yii::$app->request->post('Person');
-        $retimp=Retention::find()->select(["(concat(c.code,' ',c.slug))",'retention.id'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["c.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13252])->asArray()->all();
-        $retiva=Retention::find()->select(["concat(c.code,'  ',c.slug)",'retention.id'])->innerJoin("chart_accounts as c","retention.id_chart=c.id")->where(["c.institution_id"=>$_SESSION['id_ins']->id])->andWhere(["c.parent_id"=>13264])->asArray()->all();
+
+        $retimp=Retention::find()->select(["(concat(retention.codesri,'._',retention.slug))",'retention.id'])->where(["type"=>1])->asArray()->all();
+        $retiva=Retention::find()->select(["(concat(retention.codesri,'._',retention.slug))",'retention.id'])->where(["type"=>2])->asArray()->all();
+
         $query = $person::find()->innerJoin("clients","person.id=clients.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         $providers = $person::find()->innerJoin("providers","person.id=providers.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
         $salesman=$person::find()->innerJoin("salesman","person.id=salesman.person_id")->where(["person.institution_id"=>$_SESSION['id_ins']->id])->all();
@@ -367,9 +371,49 @@ public function actionIndex($tipos){
                                 $accounting_seats_details->cost_center_id = 1;
                                 $accounting_seats_details->status = true;
                                 $accounting_seats_details->save();
+                                if($_SESSION['codeimp']){
+                                    $sum=0;
+                                    foreach ($_SESSION['codeimp'] as $key => $value) {
+                                          $sum += $value;
+                                    }
+                                    $accounting_seats = new AccountingSeats;
+                                    $h = rand(1, 100000000000);
+                                    $ch1 = Providers::findOne(['person_id' => $model->id_personas]);
+                                    $accou_c = $ch1->paid_chart_account_id;
+                                    $ins = $person::findOne(['id' => $model->id_personas]);
+                                    $descripcion = $facturafin->description;
+                                    $nodeductible = False;
+                                    $status = True;
+                                    $accounting_seats->head_fact = $model->n_documentos;
+                                    $accounting_seats->id = $h;
+                                    $accounting_seats->institution_id = $_SESSION['id_ins']->id;
+                                    $accounting_seats->description = $descripcion;
+                                    $accounting_seats->nodeductible = $nodeductible;
+                                    $accounting_seats->status = $status;
+                                    $accounting_seats->type = "retencion";
+                                    if($accounting_seats->save()){
+                                        $accounting_seats_details = new AccountingSeatsDetails;
+                                        $accounting_seats_details->accounting_seat_id = $accounting_seats->id;
+                                        $accounting_seats_details->chart_account_id = 13234;
+                                        $accounting_seats_details->debit = $sum;
+                                        $accounting_seats_details->credit = 0;
+                                        $accounting_seats_details->cost_center_id = 1;
+                                        $accounting_seats_details->status = true;
+                                        $accounting_seats_details->save();
+                                        foreach($_SESSION['codeimp'] as $key => $value){
+                                            $accounting_seats_details = new AccountingSeatsDetails;
+                                            $accounting_seats_details->accounting_seat_id = $accounting_seats->id;
+                                            $accounting_seats_details->chart_account_id = $key;
+                                            $accounting_seats_details->debit = 0;
+                                            $accounting_seats_details->credit = $value;
+                                            $accounting_seats_details->cost_center_id = 1;
+                                            $accounting_seats_details->status = true;
+                                            $accounting_seats_details->save();
+                                        }
+                                    }
+                                }
                                 return $this->redirect('viewf?id='.$model->n_documentos);
-
-                            }
+}
 else{
     $fac=FacturaBody::find()->where(["id_head"=>$model->n_documentos])->exists();
     if($fac){
@@ -429,7 +473,7 @@ else{
 
         if ($persona && $salesman) {
             return $this->render('factura', [
-                'retiva' => $retiva, 'retimp' => $retimp, 'salesman' => $salesman, 'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio, "query" => $query, 'model3' => $facturafin, 'modeltype' => $model_tipo, 'produ' => $productos, "providers" => $providers
+               'retention'=>$retention,'retiva' => $retiva, 'retimp' => $retimp, 'salesman' => $salesman, 'model' => $model, "ven" => $persona, "model2" => $model2, "produc" => $pro, "precio" => $precio, "query" => $query, 'model3' => $facturafin, 'modeltype' => $model_tipo, 'produ' => $productos, "providers" => $providers
 
             ]);
         }
@@ -675,7 +719,12 @@ echo "</td>";
             $preciou=$data['preciou'];
             $precioto=$data['precioto'];
             $id_head=$data['ndocumento'];
-            yii::debug($id_head);
+            $retimp=$data['retimp'];
+            $retiva=$data['retinv'];
+            $nre=$data['nret'];
+            $autorite=$data['autorite'];
+
+            $_SESSION['codeimp']=\yii\helpers\Json::decode($data['codeimp']);
             $i=count($cantidad);
             for($k=0;$k<$i;$k++){
                 $id_product=New Product;
@@ -686,6 +735,10 @@ echo "</td>";
                 $facbody->precio_total=$precioto[$k];
                 $facbody->id_producto=$i_pro->id;
                 $facbody->id_head=$id_head;
+                $facbody->retencion_imp=$retimp[$k];
+                $facbody->retencion_iva=$retiva[$k];
+                $facbody->n_de_retencion=$nre;
+                $facbody->autorizacion=$autorite;
                 $facbody->save();
             }
 

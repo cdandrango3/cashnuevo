@@ -31,9 +31,18 @@ $liva=\yii\helpers\Json::encode($listIva);
 $authItemChild = Yii::$app->request->post('Person');
 $auth = Yii::$app->request->post('HeadFact');
 $request=Yii::$app->request->post('FacturaBody');
-$model->f_timestamp=date("Y-m-d")
-
+$model->f_timestamp=date("Y-m-d");
+$account = \yii\helpers\Json::encode(ArrayHelper::map(\app\models\ChartAccounts::find()
+    ->Select(["id,concat(code,' ',slug) as name"])
+    ->alias('t')
+    ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->andWhere(['parent_id'=>13252])->andWhere(['institution_id'=>1])->asArray()->all(),'id', 'name'));
+$codeiva= \yii\helpers\Json::encode(ArrayHelper::map(\app\models\ChartAccounts::find()
+    ->Select(["id,concat(code,' ',slug) as name"])
+    ->alias('t')
+    ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->andWhere(['parent_id'=>13264])->andWhere(['institution_id'=>1])->asArray()->all(),'id', 'name'));
 ?>
+?>
+
 <?=
 $this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [
     'depends' => [\yii\web\JqueryAsset::className()]
@@ -113,7 +122,7 @@ $this->registerCssFile('https://code.jquery.com/ui/1.11.2/themes/smoothness/jque
 
     <ul>
         <li><a href="#tabs-1">Factura</a></li>
-        <li><a href="#tabs-2">Retension</a></li>
+        <li><a href="#tabs-2">Retencion</a></li>
     </ul>
     <div id="tabs-1">
         <?php echo HTML::tag("a", "añadir detalle", ["value" => "ff", "id" => "añadir", "class" => "btn btn-primary text-white float-right mr-4"]); ?>
@@ -134,6 +143,9 @@ $this->registerCssFile('https://code.jquery.com/ui/1.11.2/themes/smoothness/jque
     </div>
     <div id="tabs-2">
         <table class="table table-dark">
+            <?= $form->field($retention, 'n_retencion')->textInput(["id"=>"ndocure"])->label("N` de Documento")?>
+            <?= $form->field($retention, 'autorizacion')->textInput(["id"=>"autorirete"])->label("Autorizacion")?>
+
             <thead>
             <th>Retencion</th>
             <th>Tipo</th>
@@ -147,13 +159,12 @@ $this->registerCssFile('https://code.jquery.com/ui/1.11.2/themes/smoothness/jque
         </table>
     </div>
 </div>
-<br><br><br><br><br>
+<br><br>
 <div class="row">
     <div class="col-7">
         <td><?= $form->field($model3, 'description')->label("Descripcion")->textarea(['rows' => '6'])?></td>
     </div>
     <div class="col-5">
-        <?= $form->field($produ, 'costo')->label("subtotal")->textInput(['value' =>"" ,"id"=>"pre",'type'=>"hidden"]) ?>
         <td><?= $form->field($model3, 'subtotal12')->label("subtotal 12%")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"sub"]) ?></td>
         <td><?= $form->field($model3, 'subtotal0')->label("subtotal 0%")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"sub0"]) ?></td>
         <td><?= $form->field($model3, 'descuento')->label("descuento")->textInput(['readonly' => true ,'value' =>"" ,"id"=>"desc"]) ?></td>
@@ -218,8 +229,20 @@ $this->registerJsFile('https://code.jquery.com/ui/1.11.3/jquery-ui.min.js', ['de
                 return false;
             }
         });
+    $('#ndocure')
+        .keypress(function (event) {
+            if (event.which < 48 || event.which > 57 || this.value.length === 17) {
+                return false;
+            }
+        });
     var flag1 = true;
     $('#ndocu').keypress(function(e){
+        if($(this).val().length == 3 || $(this).val().length == 7 && flag1) {
+            $(this).val($(this).val()+"-");
+            flag1 = true;
+        }
+    });
+    $('#ndocure').keypress(function(e){
         if($(this).val().length == 3 || $(this).val().length == 7 && flag1) {
             $(this).val($(this).val()+"-");
             flag1 = true;
@@ -268,40 +291,44 @@ count=count+1
       pro='<?php echo $prolist ?>'
     reteiva= '<?php echo $reteiva?>'
     reteimp= '<?php echo $reteimp?>'
+    codeimp='<?php echo $account?>'
+    codeiva='<?php echo $codeiva?>'
+    console.log(reteimp)
     var reimp=JSON.parse(reteimp)
    var reiva=JSON.parse(reteiva)
-console.log(reiva)
+    var codeim=JSON.parse(codeimp)
+    var codeiv=JSON.parse(codeiva)
     dapro=JSON.parse(pro)
      var c='<tr id="int'+count+'">'
          c+='<td>'
-       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" id="can'+count+'" class="form-control cant" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
+       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" id="can'+count+'" class="cant" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
       c+='</td>'
      c+='<td>'
-    c+='<div class="form-group field-valo"><label class="control-label" for="valo"></label><select id="'+count+'" class="form-control la" name="Product['+count+'][name]"> <option value="">Select...</option>'
+    c+='<div class="form-group field-valo"><label class="control-label" for="valo"></label><select style="height: 100%"  id="'+count+'" class="la form-control" name="Product['+count+'][name]"> <option value="">Select...</option>'
         for(i in dapro){
          c+='<option class="s" value="'+i+'">"'+i+'"</option>'
         }
     c+='</td>'
     c+='<td>'
-    c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
+    c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
     c+='</td>'
     c+='<td>'
-    c+= '<div class="form-group field-idn"><select id="retimp-'+count+'" class="js-example-basic-single m-5" name="state"><option value="">Select...</option>'
+    c+= '<div class="form-group field-idn"><select id="retimp-'+count+'" class="js-retimp m-5" name="state"><option value="">Select...</option>'
     for(i in reimp){
         c+='<option class="s" value="'+reimp[i]+'">"'+i+'"</option>'
     }
     c+='</td>'
     c+='<td>'
-    c+= '<div class="form-group field-idn"><select id="retiva-'+count+'" class="js-retiva m-5" name="state"><option value="">Select...</option>'
+    c+= '<div class="form-group field-idn"><select id="retiva-'+count+'" class="form control js-retiva m-5" name="state"><option value="">Select...</option>'
     for(i in reiva){
         c+='<option class="s" value="'+reiva[i]+'">"'+i+'"</option>'
     }
     c+='</td>'
     c+='<td>'
-    c+='<div class="form-group field-desc"><label class="control-label" for="facturabody-+count+-desc"></label><input type="text" id="desc'+count+'" class="form-control desc" name="FacturaBody['+count+'][desc]" value="">'
+    c+='<div class="form-group field-desc"><label class="control-label" for="facturabody-+count+-desc"></label><input type="text" id="desc'+count+'" class="desc" name="FacturaBody['+count+'][desc]" value="">'
     c+='</td>'
     c+='<td>'
-    c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="form-control g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
+    c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
     c+='</td>'
     c+='<td>'
     c+='<button class="btn btn-danger mdwsdsdsft-3 remove" id="'+count+'">Eliminar</button>'
@@ -353,6 +380,10 @@ $(document).on('keyup','.preu',function(){
     $(document).on('click','.remove',function(){
         id=$(this).attr("id");
         $("#int"+id).remove();
+        if ($("#ret-"+id).length > 0) {
+            $("#ret-"+id).remove();
+        }
+
         sum=0;
         c=0;
         sumiv=0;
@@ -381,10 +412,9 @@ $(document).on('keyup','.preu',function(){
         $('#total').val(total)
     })
     $('#nuevo').append(c);
-    $('.js-example-basic-single').select2({width: '100%'});
-    $('.js-retiva').select2({width: '100%'});
+    $('.js-retimp').select2({width: '100%',height:"100%"});
 
-    $('.js-example-basic-single').on('change', function() {
+    $('.js-retimp').on('change', function() {
         datas= $(this).attr('id').split('-')[1];
         console.log(datas)
         single= $(this).val();
@@ -397,32 +427,38 @@ $(document).on('keyup','.preu',function(){
                 console.log(slug)
                 var tab='<tr id="ret-'+datas+'" class="tr1">'
                 tab+='<td id="tipo-'+datas+'">'
-                tab+= slug.id|| "no existe"
+                tab+= '<div class="form-group field-idn"><select id="timp-'+datas+'" class="js-rimp js-t" name="state"><option value="">Select...</option>'
+                for(i in codeim){
+                    tab+='<option class="s" value="'+i+'">"'+codeim[i]+'"</option>'
+                }
                 tab+='</td>'
                 tab+='<td id="sri-'+datas+'">'
                 tab+='Impuesto a la renta'
                 tab+='</td>'
                 tab+='<td id="tipo-'+datas+'">'
+                tab+=slug.codesri
                 tab+='</td>'
                 tab+='<td id="base-'+datas+'">'
-                tab+= `<input type="text" value=${($("#valtotal"+datas).val())|| 0} readonly />`
+                tab+= `<input id="bases-${datas}" type="text" value=${($("#valtotal"+datas).val())|| 0} readonly />`
                 tab+='</td>'
                 tab+='<td id="%-'+datas+'">'
-                tab+= `<input type="text" value=${slug.percentage|| 0} readonly />`
+                tab+= `<input id="porcen-${datas}" type="text" value=${slug.percentage|| 0} readonly />`
                 tab+='</td>'
                 tab+='<td id="valor-'+datas+'">'
-                tab+= `<input type="text" value=${($("#valtotal"+datas).val()*parseFloat(slug.percentage))/100 || 0} readonly />`
+                tab+= `<input class="js-val" id="val-${datas}" type="text" value=${($("#valtotal"+datas).val()*parseFloat(slug.percentage))/100 || 0} readonly />`
                 tab+='</td>'
                 tab+='</td>'
                 tab+='</tr>'
                 if ($("#ret-"+datas).length > 0) {
                     $("#ret-"+datas).remove();
                     $("#ret").append(tab)
+
                 }
                 else{
                     $("#ret").append(tab)
                 }
-
+                $(".js-rimp").select2({width: '100%',height:"100%"});
+                $("#timp-"+datas).val(slug.id_chart).trigger('change');
             },
             error: function (err) {
 
@@ -436,14 +472,71 @@ $(document).on('keyup','.preu',function(){
 
         })
     })
+    $('.js-retiva').select2({width: '100%',height:"100%"});
     $('.js-retiva').on('change', function() {
-        var data = $(this).attr('id');
+        datas= $(this).attr('id').split('-')[1];
+        console.log(datas)
+        single= $(this).val();
         $.ajax({
+            method: "POST",
+            data: {single:single},
+            url: '<?php echo Yii::$app->request->baseUrl. '/cliente/getretention'?>',
+            success: function (data) {
+                slug=JSON.parse(data)
+                iva=$("#valtotal"+datas).val()*parseFloat(12)/100 || 0
+                console.log(slug)
+                var tab='<tr id="reti-'+datas+'" class="tr1">'
+                tab+='<td id="tipo-'+datas+'">'
+                tab+= '<div class="form-group field-idn"><select id="tiva-'+datas+'" class="js-riva js-t" name="state"><option value="">Select...</option>'
+                for(i in codeiv){
+                    tab+='<option class="s" value="'+i+'">"'+codeiv[i]+'"</option>'
+                }
+                tab+='</td>'
+                tab+='<td id="sri-'+datas+'">'
+                tab+='IVA'
+                tab+='</td>'
+                tab+='<td id="tipo-'+datas+'">'
+                tab+=`<p>${slug.codesri}</p>`
+                tab+='</td>'
+                tab+='<td id="base-'+datas+'">'
+                tab+= `<input id="bases-${datas}" type="text" value=${iva || 0} readonly />`
+                tab+='</td>'
+                tab+='<td id="%-'+datas+'">'
+                tab+= `<input id="porcen-${datas}" type="text" value=${slug.percentage|| 0} readonly />`
+                tab+='</td>'
+                tab+='<td id="valor-'+datas+'">'
+                tab+= `<input class="js-val" id="val2-${datas}" type="text" value=${round(iva*parseFloat(slug.percentage)/100) || 0} readonly />`
+                tab+='</td>'
+                tab+='</td>'
+                tab+='</tr>'
+                if ($("#reti-"+datas).length > 0) {
+                    $("#reti-"+datas).remove();
+                    $("#ret").append(tab)
+
+                }
+                else{
+                    $("#ret").append(tab)
+                }
+                $(".js-riva").select2({width: '100%',height:"100%"});
+                $("#tiva-"+datas).val(slug.id_chart).trigger('change');
+            },
+            error: function (err) {
+
+                //do something else
+                console.log(err);
+                if(err){
+                    alert('It works!');
+                }
+
+            }
 
         })
 
     })
+
 })
+
+
 
 function calcular(){
     tip= $('#tipodocu').val();
@@ -536,6 +629,13 @@ function calcular(){
         $('#iva').val(round(iva))
         $('#des').val(round(iva))
         $('#total').val(round(total))
+        if ($("#ret-"+h).length > 0) {
+           $("#bases-"+h).val($('#valtotal'+h).val());
+           base=$("#bases-"+h).val()
+            percent=parseFloat($("#porcen-"+h).val())/100
+            console.log(base,$("#porcen-"+h).val())
+            $("#val-"+h).val(round(base*percent))
+        }
     })
     $(document).on('keyup','.desc',function(){
         te=$(this).attr("id");
@@ -572,7 +672,10 @@ $('#buttonsubmit').click(function(){
     preciou=[];
     pro=[];
     preciot=[];
-
+    retimp=[];
+    retinv=[];
+    codeimp=[]
+    arraysd=[]
     $('.cant').each(function(){
         cantidad.push($(this).val())
     })
@@ -585,11 +688,28 @@ $('#buttonsubmit').click(function(){
     $('.g').each(function(){
     preciot.push($(this).val())
     })
+    $('.js-retimp').each(function(){
+        retimp.push($(this).val() || null)
+    })
+    $('.js-retiva').each(function(){
+        retinv.push($(this).val() || null)
+    })
+    $('.js-t').each(function(){
+        codeimp.push($(this).val() || null)
+    })
+    $('.js-val').each(function(){
+        arraysd.push($(this).val() || null)
+    })
+    numero=$('#ndocure').val() || null
+    autorirete=$('#autorirete').val() || null
+    valcodeimp=zip(codeimp,arraysd)
+
+    console.log(valcodeimp)
     n_docu= $('#ndocu').val();
     if (cantidad.length > 0){
     $.ajax({
         method: "POST",
-        data: { cantidad:cantidad,produc:pro,preciou:preciou,precioto:preciot,ndocumento:n_docu },
+        data: { cantidad:cantidad,produc:pro,preciou:preciou,precioto:preciot,ndocumento:n_docu,retimp:retimp,retinv:retinv,codeimp:JSON.stringify(valcodeimp),nret:numero,autorite:autorirete},
         url: '<?php echo Yii::$app->request->baseUrl. '/cliente/guardarproceso' ?>',
         success: function (data) {
             console.log(data);
@@ -614,5 +734,10 @@ $('#buttonsubmit').click(function(){
         var m = Number((Math.abs(num) * 100).toPrecision(15));
         return Math.round(m) / 100 * Math.sign(num);
     }
+    function zip(arr1,arr2,out={}){
+        arr1.map( (val,idx)=>{ out[val] = arr2[idx]; } );
+        return out;
+    }
+
 </script>
 

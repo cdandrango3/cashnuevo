@@ -1,13 +1,17 @@
 <?php
 
 use app\models\AccountingSeatsDetails;
+use app\models\FacturaBody;
 use app\models\Person;
 use app\models\Product;
+use app\models\Retention;
 use yii\helpers\Html;
 $producto=New Product;
 $get=$_GET["ischair"];
 yii::debug($get);
-$sale=Person::findOne(["id"=>$model->id_saleman])
+$sale=Person::findOne(["id"=>$model->id_saleman]);
+$isret=FacturaBody::find()->where(["id_head"=>$model->n_documentos])->andWhere('retencion_imp IS NOT NULL OR retencion_iva IS NOT NULL')->exists();
+$ret=FacturaBody::find()->where(["id_head"=>$model->n_documentos])->one()
 
 ?>
 <table border="0" cellpadding="0" cellspacing="0" style="width:100%;font-family: Arial;font-size:9pt">
@@ -89,10 +93,64 @@ $sale=Person::findOne(["id"=>$model->id_saleman])
 
                     </tr>
                 <?php endforeach ?>
+
                 </tbody>
 
             </table>
+    <br>
+    <br>
+<?php if($isret):?>
+    <h1><?=?>/h1>
+    <table border="1" cellpadding="4" cellspacing="0" style="width:100%;font-family: Arial;font-size:9pt">
+        <thead>
+        <tr>
+            <th>Retencion</th>
+            <th> Tipo</th>
+            <th> Base</th>
+            <th> %</th>
+            <th> Total</th>
+        </tr>
+        <?php foreach($model2 as $mbody): ?>
+        <?php if(!is_null($mbody->retencion_imp)):?>
+                <?php
+                $retencion=Retention::findOne($mbody->retencion_imp);
+                $tipo="Impuesto";
+                $codesri=$retencion->codesri." ".$retencion->slug;
+                $base=$mbody->precio_total;
+                $porcentaje=$retencion->percentage;
+                $total=$base*$porcentaje/100;
+                ?>
+                <tr>
+                    <td><?=$codesri?></td>
+                    <td><?=$tipo?></td>
+                    <td><?=$base?></td>
+                    <td><?=$porcentaje?></td>
+                    <td><?=$total?></td>
+                </tr>
+            <?php endif?>
+        <?php if(!is_null($mbody->retencion_iva)):?>
+                <?php
+                $retencion=Retention::findOne($mbody->retencion_iva);
+                $tipo="Iva";
+                $codesri=$retencion->codesri." ".$retencion->slug;
+                $base=($mbody->precio_total*12)/100;
+                $porcentaje=$retencion->percentage;
+                $total=$base*$porcentaje/100;
+                ?>
+                <tr>
+                    <td><?=$codesri?></td>
+                    <td><?=$tipo?></td>
+                    <td><?=$base?></td>
+                    <td><?=$porcentaje?></td>
+                    <td><?=$total?></td>
+                </tr>
+            <?php endif?>
+        <?php endforeach ?>
+        </thead>
 
+    </table>
+
+<?php endif?>
 
 </div>
 <div class="col-3">

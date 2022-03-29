@@ -9,7 +9,10 @@ use Yii;
  *
  * @property int $id
  * @property int|null $id_chart
- * @property int|null $percentage
+ * @property float $percentage
+ * @property string|null $codesri
+ * @property string|null $slug
+ * @property int|null $id_charting
  */
 class Retention extends \yii\db\ActiveRecord
 {
@@ -27,8 +30,11 @@ class Retention extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_chart', 'percentage'], 'default', 'value' => null],
-            [['id_chart', 'percentage'], 'integer'],
+            [['id_chart', 'id_charting'], 'default', 'value' => null],
+            [['id_chart', 'id_charting'], 'integer'],
+            [['percentage'], 'number'],
+            [['codesri', 'slug'], 'string'],
+            [['codesri'], 'unique'],
         ];
     }
 
@@ -41,6 +47,9 @@ class Retention extends \yii\db\ActiveRecord
             'id' => 'ID',
             'id_chart' => 'Id Chart',
             'percentage' => 'Percentage',
+            'codesri' => 'Codesri',
+            'slug' => 'Slug',
+            'id_charting' => 'Id Charting',
         ];
     }
 }
