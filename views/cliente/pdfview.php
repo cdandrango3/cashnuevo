@@ -100,7 +100,9 @@ $ret=FacturaBody::find()->where(["id_head"=>$model->n_documentos])->one()
     <br>
     <br>
 <?php if($isret):?>
-    <h1><?=?>/h1>
+<div style="text-align:center;font-family: Arial"><h4>Retencion</h4></div>
+    <h5><strong>N de documento </strong><?=($ret->n_de_retencion)?:""?></h5>
+    <br>
     <table border="1" cellpadding="4" cellspacing="0" style="width:100%;font-family: Arial;font-size:9pt">
         <thead>
         <tr>

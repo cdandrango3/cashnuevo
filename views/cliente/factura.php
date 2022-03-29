@@ -41,7 +41,7 @@ $codeiva= \yii\helpers\Json::encode(ArrayHelper::map(\app\models\ChartAccounts::
     ->alias('t')
     ->where(['(select count(*) from chart_accounts t2 where t2.parent_id=t.id)'=>0])->andWhere(['parent_id'=>13264])->andWhere(['institution_id'=>1])->asArray()->all(),'id', 'name'));
 ?>
-?>
+
 
 <?=
 $this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [
@@ -51,6 +51,19 @@ $this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css
 $this->registerCssFile('https://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css', [
     'depends' => [\yii\web\JqueryAsset::className()]
 ])?>
+
+<?php
+$this->registerCss('
+     .select12
+     {
+    width: 200px !important;
+     }
+     .select2{
+  margin-top:16px;
+}
+');
+
+?>
 <div class="cliente-factura">
     <?php
 
@@ -301,34 +314,34 @@ count=count+1
     dapro=JSON.parse(pro)
      var c='<tr id="int'+count+'">'
          c+='<td>'
-       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input type="text" id="can'+count+'" class="cant" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
+       c+='<div class="form-group field-can"> <label class="control-label" for="facturabody-'+count+'-cant"></label><input style="width:40px"type="text" id="can'+count+'" class="form-control cant" name="FacturaBody['+count+'][cant]" value="" onkey="javascript:fields2()">'
       c+='</td>'
      c+='<td>'
-    c+='<div class="form-group field-valo"><label class="control-label" for="valo"></label><select style="height: 100%"  id="'+count+'" class="la form-control" name="Product['+count+'][name]"> <option value="">Select...</option>'
+    c+='<div class="form-group field-valo"><label class="control-label" for="valo"></label><select style="width: 100px;height: 100%"  id="'+count+'" class="la form-control" name="Product['+count+'][name]"> <option value="">Select...</option>'
         for(i in dapro){
          c+='<option class="s" value="'+i+'">"'+i+'"</option>'
         }
     c+='</td>'
     c+='<td>'
-    c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
+    c+='<div class="form-group field-idn"><label class="control-label" for="facturabody-'+count+'-precio_u"></label><input type="text" id="idn'+count+'" class="form-control preu" name="FacturaBody['+count+'][precio_u]" value=""><div class="help-block"></div> </div> '
     c+='</td>'
     c+='<td>'
-    c+= '<div class="form-group field-idn"><select id="retimp-'+count+'" class="js-retimp m-5" name="state"><option value="">Select...</option>'
+    c+= '<div class="form-group field-idn"><select id="retimp-'+count+'" class="form-control js-retimp m-5" name="state"><option value="">Select...</option>'
     for(i in reimp){
         c+='<option class="s" value="'+reimp[i]+'">"'+i+'"</option>'
     }
     c+='</td>'
     c+='<td>'
-    c+= '<div class="form-group field-idn"><select id="retiva-'+count+'" class="form control js-retiva m-5" name="state"><option value="">Select...</option>'
+    c+= '<div class="form-group field-idn"><select id="retiva-'+count+'" class="js-retiva m-5" name="state"><option value="">Select...</option>'
     for(i in reiva){
         c+='<option class="s" value="'+reiva[i]+'">"'+i+'"</option>'
     }
     c+='</td>'
     c+='<td>'
-    c+='<div class="form-group field-desc"><label class="control-label" for="facturabody-+count+-desc"></label><input type="text" id="desc'+count+'" class="desc" name="FacturaBody['+count+'][desc]" value="">'
+    c+='<div class="form-group field-desc"><label class="control-label" for="facturabody-+count+-desc"></label><input type="text" id="desc'+count+'" class=" form-control desc" name="FacturaBody['+count+'][desc]" value="">'
     c+='</td>'
     c+='<td>'
-    c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
+    c+='<div class="form-group field-valtotal"><label class="control-label" for="facturabody-+count+-precio_total"></label><input type="text" id="valtotal'+count+'" class="form-control  g" name="FacturaBody['+count+'][precio_total]" value="" readonly>'
     c+='</td>'
     c+='<td>'
     c+='<button class="btn btn-danger mdwsdsdsft-3 remove" id="'+count+'">Eliminar</button>'
@@ -412,7 +425,7 @@ $(document).on('keyup','.preu',function(){
         $('#total').val(total)
     })
     $('#nuevo').append(c);
-    $('.js-retimp').select2({width: '100%',height:"100%"});
+    $('.js-retimp').select2({width:'100px',dropdownCssClass : 'select12'});
 
     $('.js-retimp').on('change', function() {
         datas= $(this).attr('id').split('-')[1];
@@ -472,7 +485,7 @@ $(document).on('keyup','.preu',function(){
 
         })
     })
-    $('.js-retiva').select2({width: '100%',height:"100%"});
+    $('.js-retiva').select2({width: '100px',dropdownCssClass:'select2'});
     $('.js-retiva').on('change', function() {
         datas= $(this).attr('id').split('-')[1];
         console.log(datas)
