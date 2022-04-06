@@ -14,7 +14,7 @@ use yii\helpers\Url;
 	<script src="<?= Yii::getAlias('@web') . "/librerias/plotly-latest.min.js" ?>"></script>
 </head>
 <body>
-<center><b><h3>Bienvenidos a Casbook, ¿Qué deseas hacer?</h3></b></center>
+<center><b><h3>Bienvenidos a Cashbook, ¿Qué deseas hacer?</h3></b></center>
 
 <br>
 <div class="container-fluid">
@@ -62,7 +62,7 @@ use yii\helpers\Url;
 			   <br>
 			   <img src="<?= Yii::getAlias('@web') . "/images/servicioproducto.png"; ?>" width="90" class="img-circle elevation-2" alt="User Image">
 			   <br><br>
-			  <h5>Registrar una compra</h5>
+			  <h5>Registrar una compra/venta</h5>
 			  </a>
             </div>
           </div>

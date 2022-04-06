@@ -18,6 +18,7 @@ use Yii;
  * @property int|null $chart_account
  * @property int|null $id_asiento
  * @property string|null $Description
+ * @property string|null $serial
  */
 class ChargesDetail extends \yii\db\ActiveRecord
 {
@@ -35,14 +36,11 @@ class ChargesDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type_transaccion', 'comprobante','Description'], 'string'],
+            [['type_transaccion', 'comprobante', 'Description', 'serial'], 'string'],
             [['saldo', 'balance', 'amount'], 'number'],
             [['date'], 'safe'],
             [['id_charge', 'chart_account', 'id_asiento'], 'default', 'value' => null],
             [['id_charge', 'chart_account', 'id_asiento'], 'integer'],
-            [['comprobante'], 'unique'],
-            [['comprobante'], 'required'],
-            [['chart_account'], 'required']
         ];
     }
 
@@ -62,7 +60,8 @@ class ChargesDetail extends \yii\db\ActiveRecord
             'comprobante' => 'Comprobante',
             'chart_account' => 'Chart Account',
             'id_asiento' => 'Id Asiento',
-            'Description' => 'Description'
+            'Description' => 'Description',
+            'serial' => 'Serial',
         ];
     }
 }
